@@ -1,8 +1,8 @@
 {
   "name": "@andreyfedkovich/elegant-grid",
   "private": false,
-  "version": "1.0.0",
-  "description": "A composition-first Data Grid for React. Batteries included (Sorting, Pagination, Empty States) but flexible rows. No complex configuration objects—just write standard React components",
+  "version": "1.0.1",
+  "description": "A composition-first Data Grid for React. Batteries included (Sorting, Pagination, Empty States) but flexible rows. No complex configuration objects — just write standard React components",
   "type": "module",
   "scripts": {
     "dev": "vite",
