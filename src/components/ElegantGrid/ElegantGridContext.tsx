@@ -6,7 +6,7 @@ const GridContext = createContext<GridContextValue | null>(null);
 export function useGridContext() {
   const context = useContext(GridContext);
   if (!context) {
-    throw new Error('Grid components must be used within AppGrid');
+    throw new Error('Grid components must be used within ElegantGrid');
   }
   return context;
 }

@@ -18,13 +18,13 @@ import {
 import { cn } from '@/lib/utils';
 import { PagerOptions } from './types';
 
-interface AppGridPagerProps {
+interface ElegantGridPagerProps {
   totalCount: number;
   options: PagerOptions;
   className?: string;
 }
 
-export function AppGridPager({ totalCount, options, className }: AppGridPagerProps) {
+export function ElegantGridPager({ totalCount, options, className }: ElegantGridPagerProps) {
   const {
     onQueryChange,
     onRefresh,

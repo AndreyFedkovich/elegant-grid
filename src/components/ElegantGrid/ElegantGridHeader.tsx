@@ -2,14 +2,14 @@ import React, { useCallback, useRef, useState } from 'react';
 import { ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { useGridContext } from './AppGridContext';
+import { useGridContext } from './ElegantGridContext';
 
-interface AppGridHeaderProps {
+interface ElegantGridHeaderProps {
   showSelection?: boolean;
   allData?: any[];
 }
 
-export function AppGridHeader({ showSelection = true, allData = [] }: AppGridHeaderProps) {
+export function ElegantGridHeader({ showSelection = true, allData = [] }: ElegantGridHeaderProps) {
   const {
     headers,
     columnWidths,

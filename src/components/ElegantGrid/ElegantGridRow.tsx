@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { useGridContext } from './AppGridContext';
-import { AppGridRowProps } from './types';
+import { useGridContext } from './ElegantGridContext';
+import { ElegantGridRowProps } from './types';
 
-export function AppGridRow({
+export function ElegantGridRow({
   children,
   data,
   selectable = true,
   className,
-}: AppGridRowProps) {
+}: ElegantGridRowProps) {
   const { headers, columnWidths, selectedRows, toggleRowSelection } = useGridContext();
   const [isHovered, setIsHovered] = useState(false);
 

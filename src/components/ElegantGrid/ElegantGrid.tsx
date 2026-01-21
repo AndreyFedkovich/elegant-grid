@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { GridProvider } from './AppGridContext';
-import { AppGridHeader } from './AppGridHeader';
-import { AppGridRow } from './AppGridRow';
-import { AppGridCell } from './AppGridCell';
-import { AppGridActionCell } from './AppGridActionCell';
-import { AppGridPager } from './AppGridPager';
-import { AppGridEmpty } from './AppGridEmpty';
-import { AppGridSkeleton } from './AppGridSkeleton';
-import { AppGridProps } from './types';
+import { GridProvider } from './ElegantGridContext';
+import { ElegantGridHeader } from './ElegantGridHeader';
+import { ElegantGridRow } from './ElegantGridRow';
+import { ElegantGridCell } from './ElegantGridCell';
+import { ElegantGridActionCell } from './ElegantGridActionCell';
+import { ElegantGridPager } from './ElegantGridPager';
+import { ElegantGridEmpty } from './ElegantGridEmpty';
+import { ElegantGridSkeleton } from './ElegantGridSkeleton';
+import { ElegantGridProps } from './types';
 
-function AppGridRoot({
+function ElegantGridRoot({
   headers,
   totalCount,
   loading = false,
@@ -20,7 +20,7 @@ function AppGridRoot({
   emptyState,
   children,
   className,
-}: AppGridProps) {
+}: ElegantGridProps) {
   // Extract all row data for select-all functionality
   const allRowData = useMemo(() => {
     const data: any[] = [];
@@ -55,10 +55,10 @@ function AppGridRoot({
         {/* Scrollable grid area */}
         <div className="overflow-x-auto flex-1">
           <div className="min-w-max">
-            <AppGridHeader showSelection={showSelection} allData={allRowData} />
+            <ElegantGridHeader showSelection={showSelection} allData={allRowData} />
 
             {loading && (
-              <AppGridSkeleton
+              <ElegantGridSkeleton
                 columns={headers.length}
                 rows={5}
                 showSelection={showSelection}
@@ -68,13 +68,13 @@ function AppGridRoot({
 
             {!loading && hasChildren && children}
 
-            {showEmptyState && <AppGridEmpty config={emptyState} />}
+            {showEmptyState && <ElegantGridEmpty config={emptyState} />}
           </div>
         </div>
 
         {/* Pagination */}
         {pagerOptions && (
-          <AppGridPager totalCount={totalCount} options={pagerOptions} />
+          <ElegantGridPager totalCount={totalCount} options={pagerOptions} />
         )}
       </div>
     </GridProvider>
@@ -82,8 +82,8 @@ function AppGridRoot({
 }
 
 // Compound component pattern
-export const AppGrid = Object.assign(AppGridRoot, {
-  Row: AppGridRow,
-  Cell: AppGridCell,
-  ActionCell: AppGridActionCell,
+export const ElegantGrid = Object.assign(ElegantGridRoot, {
+  Row: ElegantGridRow,
+  Cell: ElegantGridCell,
+  ActionCell: ElegantGridActionCell,
 });

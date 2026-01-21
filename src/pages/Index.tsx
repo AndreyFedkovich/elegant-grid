@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { AppGrid, Header, SortOrder } from '@/components/AppGrid';
+import { ElegantGrid, Header, SortOrder } from '@/components/ElegantGrid';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
@@ -113,7 +113,7 @@ export default function Index() {
           </div>
         )}
 
-        <AppGrid
+        <ElegantGrid
           headers={headers}
           totalCount={347}
           loading={loading}
@@ -130,22 +130,22 @@ export default function Index() {
           }}
         >
           {sampleTransactions.map((tx) => (
-            <AppGrid.Row key={tx.id} data={tx}>
-              <AppGrid.Cell>{formatDate(tx.date)}</AppGrid.Cell>
-              <AppGrid.Cell>{tx.type}</AppGrid.Cell>
+            <ElegantGrid.Row key={tx.id} data={tx}>
+              <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+              <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
               <FundCell fund={tx.from} />
               <FundCell fund={tx.to} />
-              <AppGrid.Cell align="right" className="font-mono">
+              <ElegantGrid.Cell align="right" className="font-mono">
                 {formatAmount(tx.amount)}
-              </AppGrid.Cell>
+              </ElegantGrid.Cell>
               <StatusBadge status={tx.status} />
-              <AppGrid.ActionCell
+              <ElegantGrid.ActionCell
                 onEdit={() => handleEdit(tx)}
                 onDelete={() => handleDelete(tx)}
               />
-            </AppGrid.Row>
+            </ElegantGrid.Row>
           ))}
-        </AppGrid>
+        </ElegantGrid>
       </div>
     </div>
   );

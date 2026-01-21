@@ -1,12 +1,12 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { AppGridCellProps } from './types';
+import { ElegantGridCellProps } from './types';
 
-export function AppGridCell({
+export function ElegantGridCell({
   children,
   className,
   align = 'left',
-}: AppGridCellProps & { isRowHovered?: boolean }) {
+}: ElegantGridCellProps & { isRowHovered?: boolean }) {
   return (
     <div
       className={cn(

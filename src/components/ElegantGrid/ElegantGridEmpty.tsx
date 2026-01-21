@@ -3,12 +3,12 @@ import { Inbox } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EmptyStateConfig } from './types';
 
-interface AppGridEmptyProps {
+interface ElegantGridEmptyProps {
   config: EmptyStateConfig;
   className?: string;
 }
 
-export function AppGridEmpty({ config, className }: AppGridEmptyProps) {
+export function ElegantGridEmpty({ config, className }: ElegantGridEmptyProps) {
   const { title, description, icon, action } = config;
 
   return (
