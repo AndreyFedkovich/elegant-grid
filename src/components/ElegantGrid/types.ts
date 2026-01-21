@@ -27,7 +27,7 @@ export interface EmptyStateConfig {
   action?: React.ReactNode;
 }
 
-export interface AppGridProps {
+export interface ElegantGridProps {
   headers: Header[];
   totalCount: number;
   loading?: boolean;
@@ -39,20 +39,20 @@ export interface AppGridProps {
   className?: string;
 }
 
-export interface AppGridRowProps {
+export interface ElegantGridRowProps {
   children: React.ReactNode;
   data?: any;
   selectable?: boolean;
   className?: string;
 }
 
-export interface AppGridCellProps {
+export interface ElegantGridCellProps {
   children: React.ReactNode;
   className?: string;
   align?: 'left' | 'center' | 'right';
 }
 
-export interface AppGridActionCellProps {
+export interface ElegantGridActionCellProps {
   onEdit?: () => void;
   onDelete?: () => void;
   customActions?: Array<{

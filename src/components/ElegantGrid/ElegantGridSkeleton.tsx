@@ -2,19 +2,19 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-interface AppGridSkeletonProps {
+interface ElegantGridSkeletonProps {
   columns: number;
   rows?: number;
   showSelection?: boolean;
   columnWidths: number[];
 }
 
-export function AppGridSkeleton({
+export function ElegantGridSkeleton({
   columns,
   rows = 5,
   showSelection = true,
   columnWidths,
-}: AppGridSkeletonProps) {
+}: ElegantGridSkeletonProps) {
   const gridTemplateColumns = [
     showSelection ? '48px' : '',
     ...columnWidths.map((w) => `${w}px`),

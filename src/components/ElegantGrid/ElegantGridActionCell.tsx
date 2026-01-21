@@ -2,15 +2,15 @@ import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { AppGridActionCellProps } from './types';
+import { ElegantGridActionCellProps } from './types';
 
-export function AppGridActionCell({
+export function ElegantGridActionCell({
   onEdit,
   onDelete,
   customActions = [],
   className,
   isRowHovered,
-}: AppGridActionCellProps & { isRowHovered?: boolean }) {
+}: ElegantGridActionCellProps & { isRowHovered?: boolean }) {
   return (
     <div
       className={cn(
