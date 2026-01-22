@@ -28,6 +28,7 @@ npm install @andreyfedkovich/elegant-grid
 
 ```tsx
 import { ElegantGrid } from '@andreyfedkovich/elegant-grid';
+import '@andreyfedkovich/elegant-grid/styles.css'; // Required for styling
 
 const headers = [
   { key: 'name', label: 'Name', sortable: true },
@@ -53,6 +54,29 @@ function MyGrid() {
 }
 ```
 
+## Styles
+
+Import the required CSS file once in your app's entry point:
+
+```tsx
+import '@andreyfedkovich/elegant-grid/styles.css';
+```
+
+The styles include scoped CSS variables that won't conflict with your existing design system.
+
+### Dark Mode
+
+ElegantGrid automatically adapts to dark mode when:
+- A parent element has the `dark` class (e.g., `<html class="dark">`)
+- Or add the `dark` class directly to the grid's parent container
+
+```tsx
+// Works automatically with next-themes or similar
+<div className="dark">
+  <ElegantGrid ... />
+</div>
+```
+
 ## Complete Example
 
 Here's a full-featured example showing all capabilities:
@@ -60,6 +84,7 @@ Here's a full-featured example showing all capabilities:
 ```tsx
 import { useState } from 'react';
 import { ElegantGrid, type Header, type SortOrder } from '@andreyfedkovich/elegant-grid';
+import '@andreyfedkovich/elegant-grid/styles.css';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
@@ -350,22 +375,17 @@ import { Button } from '@/components/ui/button';
 {
   "react": ">=18.0.0",
   "react-dom": ">=18.0.0",
-  "tailwindcss": ">=3.0.0",
   "lucide-react": ">=0.400.0"
 }
 ```
 
-This package also requires the following [shadcn/ui](https://ui.shadcn.com/) components:
-- `checkbox`
-- `button`
-- `input`
-- `select`
-- `skeleton`
-- `tooltip`
+> **Note:** All UI components (buttons, checkboxes, inputs, selects, etc.) are bundled with this package.
+> You don't need Tailwind CSS or shadcn/ui installed in your project.
 
 ## TypeScript Exports
 
-```ts
+```tsx
+// Components & Types
 import {
   ElegantGrid,
   type Header,
@@ -378,6 +398,9 @@ import {
   type ElegantGridActionCellProps,
   type GridContextValue,
 } from '@andreyfedkovich/elegant-grid';
+
+// Styles (import once in your app entry point)
+import '@andreyfedkovich/elegant-grid/styles.css';
 ```
 
 ## License
