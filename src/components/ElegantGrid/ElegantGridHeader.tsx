@@ -61,7 +61,6 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
           key={header.key}
           header={header}
           index={index}
-          isLast={index === headers.length - 1}
           onSort={() => handleSort(header.key, header.sortable)}
           isSorted={sortOrder?.key === header.key}
           sortDirection={sortOrder?.key === header.key ? sortOrder.direction : undefined}
@@ -76,7 +75,6 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
 interface HeaderCellProps {
   header: { key: string; label: string; sortable?: boolean; resizable?: boolean; align?: string };
   index: number;
-  isLast: boolean;
   onSort: () => void;
   isSorted: boolean;
   sortDirection?: 'asc' | 'desc';
@@ -87,7 +85,6 @@ interface HeaderCellProps {
 function HeaderCell({
   header,
   index,
-  isLast,
   onSort,
   isSorted,
   sortDirection,
@@ -127,7 +124,7 @@ function HeaderCell({
     <div
       className={cn(
         'relative flex items-center gap-2 p-3 text-sm font-medium text-muted-foreground select-none',
-        !isLast && 'border-r border-border',
+        'border-r border-border last:border-r-0',
         header.sortable && 'cursor-pointer hover:text-foreground hover:bg-muted/80 transition-colors',
         header.align === 'center' && 'justify-center',
         header.align === 'right' && 'justify-end'
@@ -144,7 +141,7 @@ function HeaderCell({
           )}
         </span>
       )}
-      {header.resizable !== false && !isLast && (
+      {header.resizable !== false && (
         <div
           className={cn(
             'absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors',
