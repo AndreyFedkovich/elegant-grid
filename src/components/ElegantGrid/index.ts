@@ -1,3 +1,6 @@
+// Styles - consumers should import '@andreyfedkovich/elegant-grid/styles.css'
+import './styles.css';
+
 // Components
 export { ElegantGrid } from './ElegantGrid';
 export { ElegantGridRow } from './ElegantGridRow';

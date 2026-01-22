@@ -47,6 +47,7 @@ export default defineConfig(async ({ mode }) => {
               "react/jsx-runtime": "ReactJSXRuntime",
               "lucide-react": "LucideReact",
             },
+            assetFileNames: 'styles.[ext]',
           },
         },
         sourcemap: true,
