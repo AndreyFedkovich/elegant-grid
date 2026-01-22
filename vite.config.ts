@@ -12,11 +12,13 @@ export default defineConfig(async ({ mode }) => {
     return {
       plugins: [
         react(),
-        dts({
-          include: ["src/components/ElegantGrid/**/*"],
-          outDir: "dist",
-          rollupTypes: true,
-        }),
+      dts({
+        include: [path.resolve(__dirname, "src/components/ElegantGrid/**/*")],
+        exclude: ["**/*.test.*", "**/*.spec.*", "node_modules/**", "eslint.config.js"],
+        outDir: "dist",
+        rollupTypes: true,
+        tsconfigPath: path.resolve(__dirname, "tsconfig.app.json"),
+      }),
       ],
       build: {
         lib: {
