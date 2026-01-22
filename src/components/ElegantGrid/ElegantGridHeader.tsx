@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
+import { Checkbox } from './ui/checkbox';
+import { cn } from './utils';
 import { useGridContext } from './ElegantGridContext';
 
 interface ElegantGridHeaderProps {

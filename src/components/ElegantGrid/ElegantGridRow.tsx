@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
+import { Checkbox } from './ui/checkbox';
+import { cn } from './utils';
 import { useGridContext } from './ElegantGridContext';
 import { ElegantGridRowProps } from './types';
 

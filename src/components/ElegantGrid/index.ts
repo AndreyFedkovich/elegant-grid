@@ -1,3 +1,4 @@
+// Components
 export { ElegantGrid } from './ElegantGrid';
 export { ElegantGridRow } from './ElegantGridRow';
 export { ElegantGridCell } from './ElegantGridCell';
@@ -6,6 +7,8 @@ export { ElegantGridPager } from './ElegantGridPager';
 export { ElegantGridEmpty } from './ElegantGridEmpty';
 export { ElegantGridSkeleton } from './ElegantGridSkeleton';
 export { useGridContext } from './ElegantGridContext';
+
+// Types
 export type {
   Header,
   SortOrder,
@@ -15,4 +18,5 @@ export type {
   ElegantGridRowProps,
   ElegantGridCellProps,
   ElegantGridActionCellProps,
+  GridContextValue,
 } from './types';

@@ -6,16 +6,16 @@ import {
   ChevronsRight,
   RefreshCw,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+} from './ui/select';
+import { cn } from './utils';
 import { PagerOptions } from './types';
 
 interface ElegantGridPagerProps {
