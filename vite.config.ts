@@ -1,13 +1,14 @@
-import { defineConfig } from "vite";
+import { defineConfig, type LibraryFormats } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   // Library build mode
   if (mode === "library") {
+    const dts = (await import("vite-plugin-dts")).default;
+    
     return {
       plugins: [
         react(),
@@ -21,8 +22,8 @@ export default defineConfig(({ mode }) => {
         lib: {
           entry: path.resolve(__dirname, "src/components/ElegantGrid/index.ts"),
           name: "ElegantGrid",
-          fileName: (format) => `elegant-grid.${format}.js`,
-          formats: ["es", "cjs"] as const,
+          fileName: (format: string) => `elegant-grid.${format}.js`,
+          formats: ["es", "cjs"] as LibraryFormats[],
         },
         rollupOptions: {
           external: [
