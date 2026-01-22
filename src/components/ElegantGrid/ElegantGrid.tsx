@@ -48,7 +48,7 @@ function ElegantGridRoot({
     >
       <div
         className={cn(
-          'flex flex-col border border-border rounded-lg overflow-hidden bg-background',
+          'elegant-grid-root flex flex-col border border-border rounded-lg overflow-hidden bg-background',
           className
         )}
       >
