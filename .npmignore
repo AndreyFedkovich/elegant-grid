@@ -1,0 +1,39 @@
+# Source files not needed in npm package
+src/pages/
+src/App.tsx
+src/App.css
+src/main.tsx
+src/index.css
+src/vite-env.d.ts
+src/components/ui/
+src/components/NavLink.tsx
+src/hooks/
+src/lib/
+
+# Test files
+src/test/
+*.test.ts
+*.test.tsx
+vitest.config.ts
+
+# Development and build config
+.github/
+public/
+index.html
+components.json
+postcss.config.js
+tailwind.config.ts
+eslint.config.js
+tsconfig*.json
+bun.lockb
+package-lock.json
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# Git
+.git/
+.gitignore
