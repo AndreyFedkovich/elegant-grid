@@ -178,7 +178,7 @@ export function ElegantGridPager({ totalCount, options, className }: ElegantGrid
       {/* Right: Page size, Jump to, Refresh */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Rows:</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">Rows:</span>
           <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue />
@@ -194,7 +194,7 @@ export function ElegantGridPager({ totalCount, options, className }: ElegantGrid
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Go to:</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">Go to:</span>
           <Input
             type="number"
             min={1}
