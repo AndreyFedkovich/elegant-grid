@@ -50,6 +50,18 @@
 .elegant-grid-root *::before,
 .elegant-grid-root *::after {
   box-sizing: border-box;
+}
+
+/* Only apply border defaults to elements that use borders */
+.elegant-grid-root .border,
+.elegant-grid-root .border-t,
+.elegant-grid-root .border-b,
+.elegant-grid-root .border-r,
+.elegant-grid-root .border-l,
+.elegant-grid-root input,
+.elegant-grid-root button,
+.elegant-grid-root [role="checkbox"],
+.elegant-grid-root [role="combobox"] {
   border-width: 0;
   border-style: solid;
   border-color: hsl(var(--border));
