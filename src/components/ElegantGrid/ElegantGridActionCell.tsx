@@ -10,9 +10,11 @@ export function ElegantGridActionCell({
   customActions = [],
   className,
   isRowHovered,
+  ...props
 }: ElegantGridActionCellProps & { isRowHovered?: boolean }) {
   return (
     <div
+      {...props}
       className={cn(
         'flex items-center justify-end gap-1 p-2 border-r border-border last:border-r-0 transition-opacity duration-150',
         isRowHovered ? 'opacity-100' : 'opacity-0',

@@ -16,10 +16,15 @@ export type {
   Header,
   SortOrder,
   PagerOptions,
+  PagerLabels,
   EmptyStateConfig,
   ElegantGridProps,
   ElegantGridRowProps,
   ElegantGridCellProps,
   ElegantGridActionCellProps,
   GridContextValue,
+  GridConfig,
 } from './types';
+
+// Constants
+export { DEFAULT_GRID_CONFIG } from './types';

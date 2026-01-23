@@ -8,7 +8,7 @@ import { ElegantGridActionCell } from './ElegantGridActionCell';
 import { ElegantGridPager } from './ElegantGridPager';
 import { ElegantGridEmpty } from './ElegantGridEmpty';
 import { ElegantGridSkeleton } from './ElegantGridSkeleton';
-import { ElegantGridProps } from './types';
+import { ElegantGridProps, DEFAULT_GRID_CONFIG } from './types';
 
 function ElegantGridRoot({
   headers,
@@ -20,7 +20,13 @@ function ElegantGridRoot({
   emptyState,
   children,
   className,
+  config: userConfig,
 }: ElegantGridProps) {
+  const config = useMemo(
+    () => ({ ...DEFAULT_GRID_CONFIG, ...userConfig }),
+    [userConfig]
+  );
+
   // Extract all row data for select-all functionality
   const allRowData = useMemo(() => {
     const data: any[] = [];
@@ -37,7 +43,7 @@ function ElegantGridRoot({
   const showSelection = onSelectionChange !== undefined;
 
   // Get initial column widths
-  const initialColumnWidths = headers.map((h) => h.width || h.minWidth || 150);
+  const initialColumnWidths = headers.map((h) => h.width || h.minWidth || config.defaultColumnWidth);
 
   return (
     <GridProvider
@@ -45,6 +51,7 @@ function ElegantGridRoot({
       loading={loading}
       onSort={onSort}
       onSelectionChange={onSelectionChange}
+      config={userConfig}
     >
       <div
         className={cn(

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { cn } from './utils';
-import { PagerOptions } from './types';
+import { PagerOptions, PagerLabels } from './types';
 
 interface ElegantGridPagerProps {
   totalCount: number;
@@ -24,13 +24,25 @@ interface ElegantGridPagerProps {
   className?: string;
 }
 
+const defaultLabels: Required<PagerLabels> = {
+  showingText: (start, end, total) => `Showing ${start}-${end} of ${total}`,
+  rowsLabel: 'Rows:',
+  goToLabel: 'Go to:',
+};
+
 export function ElegantGridPager({ totalCount, options, className }: ElegantGridPagerProps) {
   const {
     onQueryChange,
     onRefresh,
     defaultPageSize = 25,
     pageSizeOptions = [10, 25, 50, 100],
+    labels: userLabels,
   } = options;
+
+  const labels = useMemo(
+    () => ({ ...defaultLabels, ...userLabels }),
+    [userLabels]
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(defaultPageSize);
@@ -107,9 +119,7 @@ export function ElegantGridPager({ totalCount, options, className }: ElegantGrid
     >
       {/* Left: Info */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>
-          Showing {startItem}-{endItem} of {totalCount}
-        </span>
+        <span>{labels.showingText(startItem, endItem, totalCount)}</span>
       </div>
 
       {/* Center: Page navigation */}
@@ -178,7 +188,9 @@ export function ElegantGridPager({ totalCount, options, className }: ElegantGrid
       {/* Right: Page size, Jump to, Refresh */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">Rows:</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">
+            {labels.rowsLabel}
+          </span>
           <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue />
@@ -194,7 +206,9 @@ export function ElegantGridPager({ totalCount, options, className }: ElegantGrid
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">Go to:</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">
+            {labels.goToLabel}
+          </span>
           <Input
             type="number"
             min={1}
