@@ -128,6 +128,9 @@ export default function Index() {
             title: 'No transactions found',
             description: 'Try adjusting your filters or create a new transaction.',
           }}
+          config={{
+            maxHeight: '400px', // Grid body scrolls after 400px
+          }}
         >
           {sampleTransactions.map((tx) => (
             <ElegantGrid.Row key={tx.id} data={tx}>

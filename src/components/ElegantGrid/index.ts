@@ -1,14 +1,18 @@
 // Styles - consumers should import '@andreyfedkovich/elegant-grid/styles.css'
 import './styles.css';
 
-// Components
+// Main component
 export { ElegantGrid } from './ElegantGrid';
+
+// Sub-components (for advanced usage)
 export { ElegantGridRow } from './ElegantGridRow';
 export { ElegantGridCell } from './ElegantGridCell';
 export { ElegantGridActionCell } from './ElegantGridActionCell';
 export { ElegantGridPager } from './ElegantGridPager';
 export { ElegantGridEmpty } from './ElegantGridEmpty';
 export { ElegantGridSkeleton } from './ElegantGridSkeleton';
+
+// Context hook
 export { useGridContext } from './ElegantGridContext';
 
 // Types
@@ -18,12 +22,13 @@ export type {
   PagerOptions,
   PagerLabels,
   EmptyStateConfig,
+  GridConfig,
+  ResolvedGridConfig,
   ElegantGridProps,
   ElegantGridRowProps,
   ElegantGridCellProps,
   ElegantGridActionCellProps,
   GridContextValue,
-  GridConfig,
 } from './types';
 
 // Constants
