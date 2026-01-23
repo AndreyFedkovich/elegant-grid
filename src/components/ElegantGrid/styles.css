@@ -717,3 +717,71 @@
   border: 0 !important;
   background: transparent !important;
 }
+
+/* ===== Hide Native Scrollbar (for custom overlay scrollbar) ===== */
+.elegant-grid-root .hide-native-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.elegant-grid-root .hide-native-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ===== Custom Overlay Scrollbar ===== */
+.elegant-grid-root .custom-scrollbar-track {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.elegant-grid-root .custom-scrollbar-track:hover,
+.elegant-grid-root .custom-scrollbar-track.active {
+  opacity: 1;
+  background-color: hsl(var(--muted) / 0.3);
+}
+
+.elegant-grid-root .custom-scrollbar-thumb {
+  position: absolute;
+  right: 0;
+  width: 8px;
+  background-color: hsl(var(--muted-foreground) / 0.4);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.elegant-grid-root .custom-scrollbar-thumb:hover,
+.elegant-grid-root .custom-scrollbar-thumb.dragging {
+  background-color: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Dark mode for custom scrollbar */
+.dark .elegant-grid-root .custom-scrollbar-thumb,
+.elegant-grid-root.dark .custom-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.dark .elegant-grid-root .custom-scrollbar-thumb:hover,
+.dark .elegant-grid-root .custom-scrollbar-thumb.dragging,
+.elegant-grid-root.dark .custom-scrollbar-thumb:hover,
+.elegant-grid-root.dark .custom-scrollbar-thumb.dragging {
+  background-color: hsl(var(--muted-foreground) / 0.7);
+}
+
+/* Show scrollbar track on parent hover for discoverability */
+.elegant-grid-root .relative:hover .custom-scrollbar-track {
+  opacity: 0.5;
+}
+
+.elegant-grid-root .relative:hover .custom-scrollbar-track:hover,
+.elegant-grid-root .relative:hover .custom-scrollbar-track.active {
+  opacity: 1;
+}
