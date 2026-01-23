@@ -21,6 +21,16 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222.2 84% 4.9%;
   --radius: 0.5rem;
+
+  /* Container styles - applied directly to the root element */
+  border-radius: calc(var(--radius) + 2px);
+  border-width: 1px;
+  border-style: solid;
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--background));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Dark mode - triggered by parent .dark class or .dark on the grid itself */
@@ -43,6 +53,10 @@
   --destructive-foreground: 210 40% 98%;
   --popover: 222.2 84% 4.9%;
   --popover-foreground: 210 40% 98%;
+
+  /* Override container styles for dark mode */
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--border));
 }
 
 /* Base styles */
