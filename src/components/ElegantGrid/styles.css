@@ -462,43 +462,51 @@
 }
 
 /* ===== Checkbox Component ===== */
-.elegant-grid-root [role="checkbox"] {
+.elegant-grid-root button[role="checkbox"] {
   appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* Reset inherited button styles from consumer apps */
+  padding: 0 !important;
+  margin: 0;
+  line-height: 0;
+  background: transparent;
+  /* Explicit sizing */
   height: 1rem;
   width: 1rem;
+  min-height: 1rem;
+  min-width: 1rem;
   flex-shrink: 0;
   border-radius: calc(var(--radius) - 4px);
   border: 1px solid hsl(var(--primary));
-  background-color: transparent;
   cursor: pointer;
   transition-property: color, background-color, border-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.elegant-grid-root [role="checkbox"][data-state="checked"] {
-  background-color: hsl(var(--primary));
+.elegant-grid-root button[role="checkbox"][data-state="checked"],
+.elegant-grid-root button[role="checkbox"][data-state="indeterminate"] {
+  background-color: hsl(var(--primary)) !important;
   border-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
 }
-.elegant-grid-root [role="checkbox"]:focus-visible {
+.elegant-grid-root button[role="checkbox"]:focus-visible {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
 }
-.elegant-grid-root [role="checkbox"]:disabled {
+.elegant-grid-root button[role="checkbox"]:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
-.elegant-grid-root [role="checkbox"] span {
+.elegant-grid-root button[role="checkbox"] span {
   display: flex;
   align-items: center;
   justify-content: center;
   color: currentColor;
 }
-.elegant-grid-root [role="checkbox"] svg {
+.elegant-grid-root button[role="checkbox"] svg {
   width: 0.875rem;
   height: 0.875rem;
 }
