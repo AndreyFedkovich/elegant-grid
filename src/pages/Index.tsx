@@ -136,7 +136,7 @@ export default function Index() {
             description: 'Try adjusting your filters or create a new transaction.',
           }}
           config={{
-            maxHeight: '400px', // Grid body scrolls after 400px
+            maxHeight: '300px', // Grid body scrolls after 300px
           }}
         >
           {sampleTransactions.map((tx) => (
