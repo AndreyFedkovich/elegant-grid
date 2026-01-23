@@ -51,6 +51,12 @@ export interface GridConfig {
   cellPadding?: string;
   /** Z-index for sticky header (default: 10) */
   stickyHeaderZIndex?: number;
+  /** Maximum height of the grid body before vertical scroll kicks in (e.g., "400px", "50vh") */
+  maxHeight?: string;
+  /** Fixed height of the grid body (takes precedence over maxHeight) */
+  height?: string;
+  /** Enable custom scrollbar styling (default: true) */
+  styledScrollbar?: boolean;
 }
 
 export interface ElegantGridProps {
@@ -89,13 +95,19 @@ export interface ElegantGridActionCellProps extends React.HTMLAttributes<HTMLDiv
   }>;
 }
 
-export const DEFAULT_GRID_CONFIG: Required<GridConfig> = {
+export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'height'>> & Pick<GridConfig, 'maxHeight' | 'height'> = {
   checkboxColumnWidth: 48,
   defaultColumnWidth: 150,
   minColumnWidth: 80,
   cellPadding: 'p-3',
   stickyHeaderZIndex: 10,
+  maxHeight: undefined,
+  height: undefined,
+  styledScrollbar: true,
 };
+
+/** Config type used in context (with optional height fields) */
+export type ResolvedGridConfig = Required<Omit<GridConfig, 'maxHeight' | 'height'>> & Pick<GridConfig, 'maxHeight' | 'height'>;
 
 export interface GridContextValue {
   headers: Header[];
@@ -109,5 +121,5 @@ export interface GridContextValue {
   isAllSelected: boolean;
   loading: boolean;
   rowDataMap: Map<string, any>;
-  config: Required<GridConfig>;
+  config: ResolvedGridConfig;
 }

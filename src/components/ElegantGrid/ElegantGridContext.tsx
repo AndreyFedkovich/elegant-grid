@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
-import { Header, SortOrder, GridContextValue, GridConfig, DEFAULT_GRID_CONFIG } from './types';
+import { Header, SortOrder, GridContextValue, GridConfig, DEFAULT_GRID_CONFIG, ResolvedGridConfig } from './types';
 
 const GridContext = createContext<GridContextValue | null>(null);
 
@@ -28,7 +28,7 @@ export function GridProvider({
   config: userConfig,
   children,
 }: GridProviderProps) {
-  const config = useMemo(
+  const config: ResolvedGridConfig = useMemo(
     () => ({ ...DEFAULT_GRID_CONFIG, ...userConfig }),
     [userConfig]
   );

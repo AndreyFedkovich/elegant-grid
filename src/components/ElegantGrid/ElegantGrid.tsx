@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useCallback } from 'react';
 import { cn } from './utils';
 import { GridProvider } from './ElegantGridContext';
 import { ElegantGridHeader } from './ElegantGridHeader';
@@ -27,6 +27,17 @@ function ElegantGridRoot({
     [userConfig]
   );
 
+  // Refs for scroll synchronization
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Sync horizontal scroll between header and body
+  const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    if (headerRef.current) {
+      headerRef.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  }, []);
+
   // Extract all row data for select-all functionality
   const allRowData = useMemo(() => {
     const data: any[] = [];
@@ -45,6 +56,18 @@ function ElegantGridRoot({
   // Get initial column widths
   const initialColumnWidths = headers.map((h) => h.width || h.minWidth || config.defaultColumnWidth);
 
+  // Compute body scroll styles
+  const bodyScrollStyle: React.CSSProperties = {};
+  if (config.height) {
+    bodyScrollStyle.height = config.height;
+    bodyScrollStyle.overflowY = 'auto';
+  } else if (config.maxHeight) {
+    bodyScrollStyle.maxHeight = config.maxHeight;
+    bodyScrollStyle.overflowY = 'auto';
+  }
+
+  const scrollbarClass = config.styledScrollbar ? 'elegant-scrollbar' : '';
+
   return (
     <GridProvider
       headers={headers}
@@ -59,11 +82,24 @@ function ElegantGridRoot({
           className
         )}
       >
-        {/* Scrollable grid area */}
-        <div className="overflow-x-auto flex-1">
+        {/* Header wrapper - scrolls horizontally but hides scrollbar */}
+        <div
+          ref={headerRef}
+          className="overflow-x-hidden shrink-0"
+        >
           <div className="min-w-max">
             <ElegantGridHeader showSelection={showSelection} allData={allRowData} />
+          </div>
+        </div>
 
+        {/* Scrollable body area - horizontal + optional vertical scroll */}
+        <div
+          ref={bodyRef}
+          className={cn('overflow-x-auto flex-1', scrollbarClass)}
+          style={bodyScrollStyle}
+          onScroll={handleBodyScroll}
+        >
+          <div className="min-w-max">
             {loading && (
               <ElegantGridSkeleton
                 columns={headers.length}
@@ -79,7 +115,7 @@ function ElegantGridRoot({
           </div>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination - always visible at bottom */}
         {pagerOptions && (
           <ElegantGridPager totalCount={totalCount} options={pagerOptions} />
         )}
