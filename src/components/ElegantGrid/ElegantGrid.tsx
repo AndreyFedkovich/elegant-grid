@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useMemo, useRef, useCallback, useState, useEffect } from 'react';
 import { cn } from './utils';
 import { GridProvider } from './ElegantGridContext';
 import { ElegantGridHeader } from './ElegantGridHeader';
@@ -30,6 +30,32 @@ function ElegantGridRoot({
   // Refs for scroll synchronization
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Track scrollbar width for alignment compensation
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+
+  // Detect scrollbar width when body has vertical overflow
+  useEffect(() => {
+    const updateScrollbarWidth = () => {
+      if (bodyRef.current) {
+        const hasVerticalScroll = bodyRef.current.scrollHeight > bodyRef.current.clientHeight;
+        const width = hasVerticalScroll 
+          ? bodyRef.current.offsetWidth - bodyRef.current.clientWidth 
+          : 0;
+        setScrollbarWidth(width);
+      }
+    };
+    
+    updateScrollbarWidth();
+    
+    // Re-check when content changes
+    const observer = new ResizeObserver(updateScrollbarWidth);
+    if (bodyRef.current) {
+      observer.observe(bodyRef.current);
+    }
+    
+    return () => observer.disconnect();
+  }, [children, config.height, config.maxHeight]);
 
   // Sync horizontal scroll between header and body
   const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -99,7 +125,10 @@ function ElegantGridRoot({
           style={bodyScrollStyle}
           onScroll={handleBodyScroll}
         >
-          <div className="min-w-max">
+          <div 
+            className="min-w-max"
+            style={{ paddingRight: scrollbarWidth > 0 ? scrollbarWidth : undefined }}
+          >
             {loading && (
               <ElegantGridSkeleton
                 columns={headers.length}
