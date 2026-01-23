@@ -56,14 +56,23 @@ function ElegantGridRoot({
   // Get initial column widths
   const initialColumnWidths = headers.map((h) => h.width || h.minWidth || config.defaultColumnWidth);
 
-  // Compute body scroll styles
+  // Compute body scroll styles and scrollbar gutter for alignment
+  const hasVerticalScroll = !!(config.height || config.maxHeight);
   const bodyScrollStyle: React.CSSProperties = {};
-  if (config.height) {
-    bodyScrollStyle.height = config.height;
-    bodyScrollStyle.overflowY = 'auto';
-  } else if (config.maxHeight) {
-    bodyScrollStyle.maxHeight = config.maxHeight;
-    bodyScrollStyle.overflowY = 'auto';
+  const headerScrollStyle: React.CSSProperties = {};
+  
+  if (hasVerticalScroll) {
+    // Apply scrollbar-gutter to both header and body for consistent width alignment
+    bodyScrollStyle.scrollbarGutter = 'stable';
+    headerScrollStyle.scrollbarGutter = 'stable';
+    
+    if (config.height) {
+      bodyScrollStyle.height = config.height;
+      bodyScrollStyle.overflowY = 'auto';
+    } else if (config.maxHeight) {
+      bodyScrollStyle.maxHeight = config.maxHeight;
+      bodyScrollStyle.overflowY = 'auto';
+    }
   }
 
   const scrollbarClass = config.styledScrollbar ? 'elegant-scrollbar' : '';
@@ -86,6 +95,7 @@ function ElegantGridRoot({
         <div
           ref={headerRef}
           className="overflow-x-hidden shrink-0"
+          style={headerScrollStyle}
         >
           <div className="min-w-max">
             <ElegantGridHeader showSelection={showSelection} allData={allRowData} />
