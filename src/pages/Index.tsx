@@ -14,6 +14,13 @@ const sampleTransactions = [
   { id: '6', date: '2025-01-10', type: 'Transfer', from: 'Bond Fund', to: 'Index Fund', amount: 30000, status: 'failed' },
   { id: '7', date: '2025-01-09', type: 'Withdrawal', from: 'Growth Fund', to: 'External', amount: 15000, status: 'completed' },
   { id: '8', date: '2025-01-08', type: 'Deposit', from: 'External', to: 'Bond Fund', amount: 45000, status: 'pending' },
+  { id: '9', date: '2025-01-07', type: 'Transfer', from: 'Growth Fund', to: 'Index Fund', amount: 55000, status: 'completed' },
+  { id: '10', date: '2025-01-06', type: 'Withdrawal', from: 'Index Fund', to: 'External', amount: 20000, status: 'completed' },
+  { id: '11', date: '2025-01-05', type: 'Deposit', from: 'External', to: 'Growth Fund', amount: 80000, status: 'pending' },
+  { id: '12', date: '2025-01-04', type: 'Transfer', from: 'Bond Fund', to: 'Growth Fund', amount: 35000, status: 'completed' },
+  { id: '13', date: '2025-01-03', type: 'Withdrawal', from: 'Growth Fund', to: 'External', amount: 12000, status: 'failed' },
+  { id: '14', date: '2025-01-02', type: 'Deposit', from: 'External', to: 'Bond Fund', amount: 90000, status: 'completed' },
+  { id: '15', date: '2025-01-01', type: 'Transfer', from: 'Index Fund', to: 'Bond Fund', amount: 40000, status: 'completed' },
 ];
 
 const headers: Header[] = [

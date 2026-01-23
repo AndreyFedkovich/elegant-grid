@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useCallback } from 'react';
 import { cn } from './utils';
 import { GridProvider } from './ElegantGridContext';
 import { ElegantGridHeader } from './ElegantGridHeader';
@@ -8,6 +8,7 @@ import { ElegantGridActionCell } from './ElegantGridActionCell';
 import { ElegantGridPager } from './ElegantGridPager';
 import { ElegantGridEmpty } from './ElegantGridEmpty';
 import { ElegantGridSkeleton } from './ElegantGridSkeleton';
+import { ElegantGridScrollbar } from './ElegantGridScrollbar';
 import { ElegantGridProps, DEFAULT_GRID_CONFIG } from './types';
 
 function ElegantGridRoot({
@@ -30,32 +31,6 @@ function ElegantGridRoot({
   // Refs for scroll synchronization
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-
-  // Track scrollbar width for alignment compensation
-  const [scrollbarWidth, setScrollbarWidth] = useState(0);
-
-  // Detect scrollbar width when body has vertical overflow
-  useEffect(() => {
-    const updateScrollbarWidth = () => {
-      if (bodyRef.current) {
-        const hasVerticalScroll = bodyRef.current.scrollHeight > bodyRef.current.clientHeight;
-        const width = hasVerticalScroll 
-          ? bodyRef.current.offsetWidth - bodyRef.current.clientWidth 
-          : 0;
-        setScrollbarWidth(width);
-      }
-    };
-    
-    updateScrollbarWidth();
-    
-    // Re-check when content changes
-    const observer = new ResizeObserver(updateScrollbarWidth);
-    if (bodyRef.current) {
-      observer.observe(bodyRef.current);
-    }
-    
-    return () => observer.disconnect();
-  }, [children, config.height, config.maxHeight]);
 
   // Sync horizontal scroll between header and body
   const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -84,6 +59,8 @@ function ElegantGridRoot({
 
   // Compute body scroll styles
   const bodyScrollStyle: React.CSSProperties = {};
+  const hasHeightConstraint = Boolean(config.height || config.maxHeight);
+  
   if (config.height) {
     bodyScrollStyle.height = config.height;
     bodyScrollStyle.overflowY = 'auto';
@@ -118,30 +95,32 @@ function ElegantGridRoot({
           </div>
         </div>
 
-        {/* Scrollable body area - horizontal + optional vertical scroll */}
-        <div
-          ref={bodyRef}
-          className={cn('overflow-x-auto flex-1', scrollbarClass)}
-          style={bodyScrollStyle}
-          onScroll={handleBodyScroll}
-        >
-          <div 
-            className="min-w-max"
-            style={{ paddingRight: scrollbarWidth > 0 ? scrollbarWidth : undefined }}
+        {/* Scrollable body area - with custom overlay scrollbar */}
+        <div className={cn('relative', !hasHeightConstraint && 'flex-1')}>
+          <div
+            ref={bodyRef}
+            className={cn('overflow-x-auto hide-native-scrollbar', !hasHeightConstraint && 'h-full', scrollbarClass)}
+            style={bodyScrollStyle}
+            onScroll={handleBodyScroll}
           >
-            {loading && (
-              <ElegantGridSkeleton
-                columns={headers.length}
-                rows={5}
-                showSelection={showSelection}
-                columnWidths={initialColumnWidths}
-              />
-            )}
+            <div className="min-w-max">
+              {loading && (
+                <ElegantGridSkeleton
+                  columns={headers.length}
+                  rows={5}
+                  showSelection={showSelection}
+                  columnWidths={initialColumnWidths}
+                />
+              )}
 
-            {!loading && hasChildren && children}
+              {!loading && hasChildren && children}
 
-            {showEmptyState && <ElegantGridEmpty config={emptyState} />}
+              {showEmptyState && <ElegantGridEmpty config={emptyState} />}
+            </div>
           </div>
+          
+          {/* Custom overlay scrollbar */}
+          <ElegantGridScrollbar containerRef={bodyRef} />
         </div>
 
         {/* Pagination - always visible at bottom */}
