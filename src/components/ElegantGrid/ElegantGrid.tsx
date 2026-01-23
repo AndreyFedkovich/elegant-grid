@@ -95,11 +95,15 @@ function ElegantGridRoot({
           </div>
         </div>
 
-        {/* Scrollable body area - with custom overlay scrollbar */}
+        {/* Scrollable body area with custom overlay scrollbar */}
         <div className={cn('relative', !hasHeightConstraint && 'flex-1')}>
           <div
             ref={bodyRef}
-            className={cn('overflow-x-auto hide-native-scrollbar', !hasHeightConstraint && 'h-full', scrollbarClass)}
+            className={cn(
+              'overflow-x-auto hide-vertical-scrollbar',
+              !hasHeightConstraint && 'h-full',
+              scrollbarClass
+            )}
             style={bodyScrollStyle}
             onScroll={handleBodyScroll}
           >
@@ -119,7 +123,7 @@ function ElegantGridRoot({
             </div>
           </div>
           
-          {/* Custom overlay scrollbar */}
+          {/* Custom overlay scrollbar for vertical scroll */}
           <ElegantGridScrollbar containerRef={bodyRef} />
         </div>
 
