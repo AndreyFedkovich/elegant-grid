@@ -1,7 +1,7 @@
 {
   "name": "@andreyfedkovich/elegant-grid",
   "private": false,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A composition-first Data Grid for React. Batteries included (Sorting, Pagination, Empty States) but flexible rows. No complex configuration objects — just write standard React components",
   "type": "module",
   "main": "dist/elegant-grid.cjs.js",
