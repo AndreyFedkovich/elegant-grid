@@ -9,15 +9,16 @@ export function ElegantGridRow({
   data,
   selectable = true,
   className,
+  ...props
 }: ElegantGridRowProps) {
-  const { headers, columnWidths, selectedRows, toggleRowSelection } = useGridContext();
+  const { headers, columnWidths, selectedRows, toggleRowSelection, config } = useGridContext();
   const [isHovered, setIsHovered] = useState(false);
 
   const rowId = data?.id?.toString() || JSON.stringify(data);
   const isSelected = selectedRows.has(rowId);
 
   const gridTemplateColumns = [
-    selectable ? '48px' : '',
+    selectable ? `${config.checkboxColumnWidth}px` : '',
     ...columnWidths.map((w) => `${w}px`),
   ]
     .filter(Boolean)
@@ -35,17 +36,24 @@ export function ElegantGridRow({
 
   return (
     <div
+      {...props}
       className={cn(
         'grid border-b border-border transition-colors duration-150',
         isSelected ? 'bg-primary/5' : 'bg-background hover:bg-muted/30',
         className
       )}
-      style={{ gridTemplateColumns }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      style={{ gridTemplateColumns, ...props.style }}
+      onMouseEnter={(e) => {
+        setIsHovered(true);
+        props.onMouseEnter?.(e);
+      }}
+      onMouseLeave={(e) => {
+        setIsHovered(false);
+        props.onMouseLeave?.(e);
+      }}
     >
       {selectable && (
-        <div className="flex items-center justify-center p-3 border-r border-border">
+        <div className={cn('flex items-center justify-center border-r border-border', config.cellPadding)}>
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => toggleRowSelection(rowId, data)}

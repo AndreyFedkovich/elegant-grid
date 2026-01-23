@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
-import { Header, SortOrder, GridContextValue } from './types';
+import { Header, SortOrder, GridContextValue, GridConfig, DEFAULT_GRID_CONFIG } from './types';
 
 const GridContext = createContext<GridContextValue | null>(null);
 
@@ -16,6 +16,7 @@ interface GridProviderProps {
   loading: boolean;
   onSort?: (order: SortOrder | null) => void;
   onSelectionChange?: (selectedData: any[]) => void;
+  config?: GridConfig;
   children: React.ReactNode;
 }
 
@@ -24,10 +25,16 @@ export function GridProvider({
   loading,
   onSort,
   onSelectionChange,
+  config: userConfig,
   children,
 }: GridProviderProps) {
+  const config = useMemo(
+    () => ({ ...DEFAULT_GRID_CONFIG, ...userConfig }),
+    [userConfig]
+  );
+
   const [columnWidths, setColumnWidths] = useState<number[]>(
-    headers.map((h) => h.width || h.minWidth || 150)
+    headers.map((h) => h.width || h.minWidth || config.defaultColumnWidth)
   );
   const [sortOrder, setSortOrderState] = useState<SortOrder | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
@@ -37,10 +44,10 @@ export function GridProvider({
   const setColumnWidth = useCallback((index: number, width: number) => {
     setColumnWidths((prev) => {
       const next = [...prev];
-      next[index] = Math.max(width, headers[index].minWidth || 80);
+      next[index] = Math.max(width, headers[index].minWidth || config.minColumnWidth);
       return next;
     });
-  }, [headers]);
+  }, [headers, config.minColumnWidth]);
 
   const setSortOrder = useCallback((order: SortOrder | null) => {
     setSortOrderState(order);
@@ -116,6 +123,7 @@ export function GridProvider({
     isAllSelected,
     loading,
     rowDataMap,
+    config,
   };
 
   return <GridContext.Provider value={value}>{children}</GridContext.Provider>;

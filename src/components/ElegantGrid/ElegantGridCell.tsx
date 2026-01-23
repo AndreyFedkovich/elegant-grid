@@ -6,9 +6,11 @@ export function ElegantGridCell({
   children,
   className,
   align = 'left',
+  ...props
 }: ElegantGridCellProps & { isRowHovered?: boolean }) {
   return (
     <div
+      {...props}
       className={cn(
         'flex items-center p-3 text-sm border-r border-border last:border-r-0 min-w-0',
         align === 'center' && 'justify-center',
