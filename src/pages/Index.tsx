@@ -27,6 +27,7 @@ const sampleTransactions = [
 
 // Section navigation config
 const sections = [
+  { id: 'full-featured', label: 'Full Featured' },
   { id: 'basic', label: 'Basic' },
   { id: 'sorting', label: 'Sorting' },
   { id: 'selection', label: 'Selection' },
@@ -143,6 +144,7 @@ export default function Index() {
   // State for different demos
   const [sortOrder, setSortOrder] = useState<SortOrder | null>(null);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [fullFeaturedSelection, setFullFeaturedSelection] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleQueryChange = useCallback(({ offset, limit }: { offset: number; limit: number }) => {
@@ -233,6 +235,50 @@ export default function Index() {
       {/* Demo Sections */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
         
+        {/* 0. Full Featured Grid */}
+        <DemoSection
+          id="full-featured"
+          title="Full Featured Grid"
+          description="Complete example with sorting, selection, pagination, custom cells, and action buttons."
+        >
+          {fullFeaturedSelection.length > 0 && (
+            <div className="p-3 border-b bg-muted/30">
+              <span className="text-sm text-muted-foreground">
+                {fullFeaturedSelection.length} transaction(s) selected
+              </span>
+            </div>
+          )}
+          <ElegantGrid
+            headers={fullHeaders}
+            totalCount={sampleTransactions.length}
+            onSort={setSortOrder}
+            onSelectionChange={setFullFeaturedSelection}
+            pagerOptions={{
+              onQueryChange: handleQueryChange,
+              onRefresh: handleRefresh,
+              defaultPageSize: 5,
+              pageSizeOptions: [5, 10, 15],
+            }}
+          >
+            {sampleTransactions.map((tx) => (
+              <ElegantGrid.Row key={tx.id} data={tx}>
+                <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+                <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
+                <FundCell fund={tx.from} />
+                <FundCell fund={tx.to} />
+                <ElegantGrid.Cell align="right" className="font-mono">
+                  {formatAmount(tx.amount)}
+                </ElegantGrid.Cell>
+                <StatusBadge status={tx.status} />
+                <ElegantGrid.ActionCell
+                  onEdit={() => handleEdit(tx)}
+                  onDelete={() => handleDelete(tx)}
+                />
+              </ElegantGrid.Row>
+            ))}
+          </ElegantGrid>
+        </DemoSection>
+
         {/* 1. Basic Grid */}
         <DemoSection
           id="basic"
