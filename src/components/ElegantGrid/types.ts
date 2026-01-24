@@ -55,10 +55,14 @@ export interface GridConfig {
   maxHeight?: string;
   /** Fixed height of the grid body (takes precedence over maxHeight) */
   height?: string;
+  /** Minimum height of the grid body to maintain consistent height during loading */
+  minHeight?: string;
   /** Enable custom scrollbar styling (default: true) */
   styledScrollbar?: boolean;
   /** Property key to use for row identification (default: "id") */
   rowIdKey?: string;
+  /** Number of skeleton rows to show during loading (default: uses pagerOptions.defaultPageSize or 5) */
+  skeletonRows?: number;
 }
 
 export interface ElegantGridProps {
@@ -97,7 +101,7 @@ export interface ElegantGridActionCellProps extends React.HTMLAttributes<HTMLDiv
   }>;
 }
 
-export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'height'>> & Pick<GridConfig, 'maxHeight' | 'height'> = {
+export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'>> & Pick<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'> = {
   checkboxColumnWidth: 48,
   defaultColumnWidth: 150,
   minColumnWidth: 80,
@@ -105,12 +109,14 @@ export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'heigh
   stickyHeaderZIndex: 10,
   maxHeight: undefined,
   height: undefined,
+  minHeight: undefined,
   styledScrollbar: true,
   rowIdKey: 'id',
+  skeletonRows: undefined,
 };
 
 /** Config type used in context (with optional height fields) */
-export type ResolvedGridConfig = Required<Omit<GridConfig, 'maxHeight' | 'height'>> & Pick<GridConfig, 'maxHeight' | 'height'>;
+export type ResolvedGridConfig = Required<Omit<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'>> & Pick<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'>;
 
 export interface GridContextValue {
   headers: Header[];
