@@ -60,7 +60,11 @@ function ElegantGridRoot({
 
   // Compute body scroll styles
   const bodyScrollStyle: React.CSSProperties = {};
-  const hasHeightConstraint = Boolean(config.height || config.maxHeight);
+  const hasHeightConstraint = Boolean(config.height || config.maxHeight || config.minHeight);
+  
+  if (config.minHeight) {
+    bodyScrollStyle.minHeight = config.minHeight;
+  }
   
   if (config.height) {
     bodyScrollStyle.height = config.height;
@@ -69,6 +73,9 @@ function ElegantGridRoot({
     bodyScrollStyle.maxHeight = config.maxHeight;
     bodyScrollStyle.overflowY = 'auto';
   }
+  
+  // Calculate skeleton rows: prefer config, then pagerOptions.defaultPageSize, then 5
+  const skeletonRowCount = config.skeletonRows ?? pagerOptions?.defaultPageSize ?? 5;
 
   const scrollbarClass = config.styledScrollbar ? 'elegant-scrollbar' : '';
 
@@ -120,7 +127,7 @@ function ElegantGridRoot({
               {loading && (
                 <ElegantGridSkeleton
                   columns={headers.length}
-                  rows={5}
+                  rows={skeletonRowCount}
                   showSelection={showSelection}
                   columnWidths={initialColumnWidths}
                 />
