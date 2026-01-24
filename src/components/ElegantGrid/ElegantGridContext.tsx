@@ -78,8 +78,12 @@ export function GridProvider({
     });
   }, [onSelectionChange, rowDataMap]);
 
+  const getRowId = useCallback((d: any) => {
+    return d?.[config.rowIdKey]?.toString() || JSON.stringify(d);
+  }, [config.rowIdKey]);
+
   const toggleAllSelection = useCallback((allData: any[]) => {
-    const allIds = allData.map((d) => d.id?.toString() || JSON.stringify(d));
+    const allIds = allData.map(getRowId);
     
     setSelectedRows((prev) => {
       const allSelected = allIds.every((id) => prev.has(id));
@@ -92,7 +96,7 @@ export function GridProvider({
         setRowDataMap(() => {
           const nextMap = new Map();
           allData.forEach((d) => {
-            const id = d.id?.toString() || JSON.stringify(d);
+            const id = getRowId(d);
             nextMap.set(id, d);
           });
           return nextMap;
@@ -104,7 +108,7 @@ export function GridProvider({
     });
     
     setAllRowIds(allIds);
-  }, [onSelectionChange]);
+  }, [onSelectionChange, getRowId]);
 
   const isAllSelected = useMemo(() => {
     if (allRowIds.length === 0) return false;

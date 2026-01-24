@@ -57,6 +57,8 @@ export interface GridConfig {
   height?: string;
   /** Enable custom scrollbar styling (default: true) */
   styledScrollbar?: boolean;
+  /** Property key to use for row identification (default: "id") */
+  rowIdKey?: string;
 }
 
 export interface ElegantGridProps {
@@ -104,6 +106,7 @@ export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'heigh
   maxHeight: undefined,
   height: undefined,
   styledScrollbar: true,
+  rowIdKey: 'id',
 };
 
 /** Config type used in context (with optional height fields) */

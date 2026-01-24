@@ -14,7 +14,7 @@ export function ElegantGridRow({
   const { headers, columnWidths, selectedRows, toggleRowSelection, config } = useGridContext();
   const [isHovered, setIsHovered] = useState(false);
 
-  const rowId = data?.id?.toString() || JSON.stringify(data);
+  const rowId = data?.[config.rowIdKey]?.toString() || JSON.stringify(data);
   const isSelected = selectedRows.has(rowId);
 
   const gridTemplateColumns = [
