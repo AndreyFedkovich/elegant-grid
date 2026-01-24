@@ -56,7 +56,7 @@ function DemoSection({
         <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-      <div className="border rounded-lg bg-card overflow-hidden">
+      <div className="overflow-hidden">
         {children}
       </div>
     </section>
