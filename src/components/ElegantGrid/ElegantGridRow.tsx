@@ -11,14 +11,15 @@ export function ElegantGridRow({
   className,
   ...props
 }: ElegantGridRowProps) {
-  const { headers, columnWidths, selectedRows, toggleRowSelection, config } = useGridContext();
+  const { headers, columnWidths, selectedRows, toggleRowSelection, config, showSelection } = useGridContext();
   const [isHovered, setIsHovered] = useState(false);
 
   const rowId = data?.[config.rowIdKey]?.toString() || JSON.stringify(data);
   const isSelected = selectedRows.has(rowId);
 
+  // Use grid-level showSelection for column layout (ensures alignment with header)
   const gridTemplateColumns = [
-    selectable ? `${config.checkboxColumnWidth}px` : '',
+    showSelection ? `${config.checkboxColumnWidth}px` : '',
     ...columnWidths.map((w) => `${w}px`),
   ]
     .filter(Boolean)
@@ -52,12 +53,13 @@ export function ElegantGridRow({
         props.onMouseLeave?.(e);
       }}
     >
-      {selectable && (
+      {showSelection && (
         <div className={cn('flex items-center justify-center border-r border-border', config.cellPadding)}>
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => toggleRowSelection(rowId, data)}
-            aria-label="Select row"
+            disabled={!selectable}
+            aria-label={selectable ? "Select row" : "Selection disabled for this row"}
           />
         </div>
       )}

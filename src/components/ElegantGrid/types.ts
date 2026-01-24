@@ -131,4 +131,6 @@ export interface GridContextValue {
   loading: boolean;
   rowDataMap: Map<string, any>;
   config: ResolvedGridConfig;
+  /** Whether selection is enabled at the grid level */
+  showSelection: boolean;
 }
