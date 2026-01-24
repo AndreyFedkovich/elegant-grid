@@ -718,44 +718,14 @@
   background: transparent !important;
 }
 
-/* ===== Hide Only Vertical Native Scrollbar (for custom overlay scrollbar) ===== */
-/* The trick is to set width: 0 for vertical but keep height for horizontal */
-.elegant-grid-root .hide-vertical-scrollbar {
-  overflow-x: auto;
-  overflow-y: scroll; /* Always reserve space for scrolling */
+/* ===== Hide All Native Scrollbars (for containers with custom scrollbar overlay) ===== */
+.elegant-grid-root .hide-all-scrollbars {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-/* WebKit: Hide vertical scrollbar only */
-.elegant-grid-root .hide-vertical-scrollbar::-webkit-scrollbar {
-  width: 0; /* Hide vertical */
-  height: 8px; /* Keep horizontal */
-}
-
-.elegant-grid-root .hide-vertical-scrollbar::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.3);
-  border-radius: 4px;
-}
-
-.elegant-grid-root .hide-vertical-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 4px;
-}
-
-.elegant-grid-root .hide-vertical-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-
-/* Firefox: Use overlay scrollbars or thin scrollbar that we can hide visually */
-@supports (scrollbar-width: thin) {
-  .elegant-grid-root .hide-vertical-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent; /* Hide but keep functional */
-  }
-  
-  /* Show horizontal scrollbar on hover */
-  .elegant-grid-root .hide-vertical-scrollbar:hover {
-    scrollbar-color: hsl(var(--muted-foreground) / 0.3) hsl(var(--muted) / 0.3);
-  }
+.elegant-grid-root .hide-all-scrollbars::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* ===== Custom Overlay Scrollbar ===== */

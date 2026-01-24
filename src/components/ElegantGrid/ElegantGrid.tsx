@@ -30,7 +30,8 @@ function ElegantGridRoot({
 
   // Refs for scroll synchronization
   const headerRef = useRef<HTMLDivElement>(null);
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null); // Outer: horizontal scroll
+  const verticalScrollRef = useRef<HTMLDivElement>(null); // Inner: vertical scroll
 
   // Sync horizontal scroll between header and body
   const handleBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -95,19 +96,27 @@ function ElegantGridRoot({
           </div>
         </div>
 
-        {/* Scrollable body area with custom overlay scrollbar */}
+        {/* Scrollable body area with nested scroll containers */}
         <div className={cn('relative', !hasHeightConstraint && 'flex-1')}>
+          {/* Outer container: horizontal scroll with native scrollbar */}
           <div
             ref={bodyRef}
             className={cn(
-              'overflow-x-auto hide-vertical-scrollbar',
-              !hasHeightConstraint && 'h-full',
+              'overflow-x-auto overflow-y-hidden',
               scrollbarClass
             )}
-            style={bodyScrollStyle}
+            style={hasHeightConstraint ? { maxHeight: config.maxHeight, height: config.height } : undefined}
             onScroll={handleBodyScroll}
           >
-            <div className="min-w-max">
+            {/* Inner container: vertical scroll with hidden native scrollbar */}
+            <div
+              ref={verticalScrollRef}
+              className={cn(
+                'min-w-max hide-all-scrollbars',
+                !hasHeightConstraint && 'h-full'
+              )}
+              style={bodyScrollStyle}
+            >
               {loading && (
                 <ElegantGridSkeleton
                   columns={headers.length}
@@ -124,7 +133,7 @@ function ElegantGridRoot({
           </div>
           
           {/* Custom overlay scrollbar for vertical scroll */}
-          <ElegantGridScrollbar containerRef={bodyRef} />
+          <ElegantGridScrollbar containerRef={verticalScrollRef} />
         </div>
 
         {/* Pagination - always visible at bottom */}
