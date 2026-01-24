@@ -253,6 +253,9 @@ export default function Index() {
             totalCount={sampleTransactions.length}
             onSort={setSortOrder}
             onSelectionChange={setFullFeaturedSelection}
+            config={{
+              maxHeight: '400px',
+            }}
             pagerOptions={{
               onQueryChange: handleQueryChange,
               onRefresh: handleRefresh,
