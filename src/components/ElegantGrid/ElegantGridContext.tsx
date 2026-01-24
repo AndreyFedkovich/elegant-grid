@@ -115,6 +115,9 @@ export function GridProvider({
     return allRowIds.every((id) => selectedRows.has(id));
   }, [selectedRows, allRowIds]);
 
+  // Determine if selection is enabled at grid level
+  const showSelection = onSelectionChange !== undefined;
+
   const value: GridContextValue = {
     headers,
     columnWidths,
@@ -128,6 +131,7 @@ export function GridProvider({
     loading,
     rowDataMap,
     config,
+    showSelection,
   };
 
   return <GridContext.Provider value={value}>{children}</GridContext.Provider>;
