@@ -42,7 +42,7 @@ export function ElegantGridRow({
     <div
       {...props}
       className={cn(
-        'grid border-b border-border transition-colors duration-150',
+        'grid border-b border-border last:border-b-0 transition-colors duration-150',
         isSelected ? 'bg-primary/5' : 'bg-background hover:bg-muted/30',
         className
       )}
