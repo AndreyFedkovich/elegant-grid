@@ -408,6 +408,7 @@
 
 /* ===== Pseudo-class Variants ===== */
 .elegant-grid-root .last\:border-r-0:last-child { border-right-width: 0; }
+.elegant-grid-root .last\:border-b-0:last-child { border-bottom-width: 0; }
 
 /* Hover states */
 .elegant-grid-root .hover\:text-foreground:hover { color: hsl(var(--foreground)); }
