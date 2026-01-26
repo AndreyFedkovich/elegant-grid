@@ -15,6 +15,8 @@ export interface ElegantGridHeaderProps {
   width?: number;
   /** Text alignment */
   align?: 'left' | 'center' | 'right';
+  /** If true, this column will expand to fill remaining space */
+  fill?: boolean;
   /** Custom content for the header (takes precedence over label) */
   children?: React.ReactNode;
 }

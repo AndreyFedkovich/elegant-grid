@@ -10,6 +10,8 @@ export interface Header {
   resizable?: boolean;
   /** Custom content for the header (takes precedence over label) */
   customContent?: React.ReactNode;
+  /** If true, this column will expand to fill remaining space (uses 1fr) */
+  fill?: boolean;
 }
 
 // Re-export from composition component for type usage

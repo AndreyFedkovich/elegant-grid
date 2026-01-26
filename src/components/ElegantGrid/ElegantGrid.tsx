@@ -47,6 +47,7 @@ function extractHeadersFromChildren(children: React.ReactNode): {
             width: props.width,
             align: props.align,
             customContent: props.children,
+            fill: props.fill,
           });
         }
       });
