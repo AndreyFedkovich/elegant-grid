@@ -1,337 +1,173 @@
 
+## Fix: Extra Divider with Custom Cells in Composition Headers
 
-## Implement Composition-Based Headers with Clone & Extract Pattern
+### Root Cause Analysis
 
-### Overview
+The issue is that custom cell components like `StatusBadge` render their own container div with `border-r border-border` styling, but they **lack the `last:border-r-0` rule** that `ElegantGrid.Cell` uses to remove the right border from the last cell.
 
-This plan introduces a new composition-based API for defining headers while maintaining full backward compatibility with the existing props-based approach. The Clone & Extract pattern will parse child components to extract header configuration before rendering.
+**Current `StatusBadge` (in Index.tsx):**
+```tsx
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <div className="flex items-center p-3 border-r border-border">
+      <Badge variant={variant}>{status}</Badge>
+    </div>
+  );
+}
+```
+
+**Current `ElegantGrid.Cell`:**
+```tsx
+<div className="flex items-center p-3 text-sm border-r border-border last:border-r-0 min-w-0">
+```
+
+The `last:border-r-0` Tailwind utility only works when the element is the last child, which `StatusBadge` IS - but it doesn't have this rule.
 
 ---
 
-### New API Design
+### Solution Options
 
-**Current Approach (remains supported):**
+#### Option A: Fix the Demo (Recommended for Immediate Fix)
+
+Update `StatusBadge` and `FundCell` custom components in `Index.tsx` to include `last:border-r-0`:
+
 ```tsx
-<ElegantGrid headers={[{ key: 'name', label: 'Name', sortable: true }]}>
-  <ElegantGrid.Row data={item}>
-    <ElegantGrid.Cell>{item.name}</ElegantGrid.Cell>
-  </ElegantGrid.Row>
-</ElegantGrid>
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <div className="flex items-center p-3 border-r border-border last:border-r-0">
+      <Badge variant={variant}>{status}</Badge>
+    </div>
+  );
+}
+
+function FundCell({ fund }: { fund: string }) {
+  return (
+    <div className="flex items-center gap-2 p-3 border-r border-border last:border-r-0">
+      {/* ... */}
+    </div>
+  );
+}
 ```
 
-**New Composition Approach:**
+#### Option B: Wrap Custom Content in ElegantGrid.Cell (Best Practice)
+
+Update the demo to use `ElegantGrid.Cell` as a wrapper for custom content:
+
 ```tsx
-<ElegantGrid totalCount={100}>
-  <ElegantGrid.Headers>
-    <ElegantGrid.Header 
-      dataKey="name" 
-      label="Name" 
-      sortable 
-      minWidth={150}
-    />
-    <ElegantGrid.Header 
-      dataKey="status" 
-      label="Status"
-      render={() => <><Icon /> Status</>}  
-    />
-  </ElegantGrid.Headers>
-  
-  <ElegantGrid.Row data={item}>
-    <ElegantGrid.Cell>{item.name}</ElegantGrid.Cell>
-  </ElegantGrid.Row>
-</ElegantGrid>
+<ElegantGrid.Row key={tx.id} data={tx}>
+  <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+  <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
+  <ElegantGrid.Cell>{tx.from}</ElegantGrid.Cell>
+  <ElegantGrid.Cell>{tx.to}</ElegantGrid.Cell>
+  <ElegantGrid.Cell align="right" className="font-mono">
+    {formatAmount(tx.amount)}
+  </ElegantGrid.Cell>
+  <ElegantGrid.Cell>
+    <StatusBadge status={tx.status} />
+  </ElegantGrid.Cell>
+</ElegantGrid.Row>
 ```
+
+This requires updating `StatusBadge` and `FundCell` to remove their own padding/border styling since `ElegantGrid.Cell` provides it.
 
 ---
 
-### Architecture: Clone & Extract Pattern
+### Recommended Implementation
 
-```text
-+----------------------------------+
-|         ElegantGridRoot          |
-+----------------------------------+
-              |
-              v
-+----------------------------------+
-|   extractHeadersFromChildren()   |  <-- NEW: Parse children before render
-|   - Find ElegantGrid.Headers     |
-|   - Extract Header props         |
-|   - Convert to Header[] format   |
-+----------------------------------+
-              |
-              v
-+----------------------------------+
-|         GridProvider             |
-|   (receives headers as before)   |
-+----------------------------------+
-              |
-       +------+------+
-       v             v
-  HeaderRow       Rows
-  (renders)     (renders)
-```
+I recommend **Option B** as the architectural best practice, which aligns with the existing memory note about alignment and border logic:
 
----
-
-### Files to Create
-
-#### 1. `src/components/ElegantGrid/ElegantGridHeaders.tsx` (NEW)
-
-Defines the container and individual header components:
-
-```tsx
-// Container component - acts as a marker for extraction
-export function ElegantGridHeaders({ children }: { children: React.ReactNode }) {
-  // This component doesn't render anything directly
-  // Its children are extracted and processed by the parent
-  return null;
-}
-
-// Individual header component - holds configuration
-export interface ElegantGridHeaderProps {
-  dataKey: string;           // Column identifier (maps to Header.key)
-  label: string;             // Display text
-  sortable?: boolean;
-  resizable?: boolean;
-  minWidth?: number;
-  width?: number;
-  align?: 'left' | 'center' | 'right';
-  render?: () => React.ReactNode;  // Custom header content
-}
-
-export function ElegantGridHeaderComponent(props: ElegantGridHeaderProps) {
-  // This component doesn't render - it's a configuration holder
-  return null;
-}
-```
+> Custom cell content (avatars, badges) must be wrapped in `ElegantGrid.Cell` rather than replacing it to preserve the grid's internal border logic.
 
 ---
 
 ### Files to Modify
 
-#### 2. `src/components/ElegantGrid/types.ts`
+#### `src/pages/Index.tsx`
 
-Add new types and extend existing Header interface:
-
+1. **Update `FundCell`** - Remove container styling, just render content:
 ```tsx
-// Extend Header interface
-export interface Header {
-  key: string;
-  label: string;
-  sortable?: boolean;
-  minWidth?: number;
-  width?: number;
-  align?: 'left' | 'center' | 'right';
-  resizable?: boolean;
-  render?: () => React.ReactNode;  // NEW: Custom render function
-}
-
-// New type for composition-based header props
-export interface ElegantGridHeaderProps {
-  dataKey: string;
-  label: string;
-  sortable?: boolean;
-  resizable?: boolean;
-  minWidth?: number;
-  width?: number;
-  align?: 'left' | 'center' | 'right';
-  render?: () => React.ReactNode;
-}
-
-// Make headers optional in ElegantGridProps
-export interface ElegantGridProps {
-  headers?: Header[];  // NOW OPTIONAL when using composition
-  // ... rest unchanged
-}
-```
-
----
-
-#### 3. `src/components/ElegantGrid/ElegantGrid.tsx`
-
-Implement the Clone & Extract logic:
-
-```tsx
-import { ElegantGridHeaders, ElegantGridHeaderComponent } from './ElegantGridHeaders';
-
-// Helper function to extract headers from composition children
-function extractHeadersFromChildren(children: React.ReactNode): {
-  headers: Header[];
-  otherChildren: React.ReactNode;
-} {
-  const headers: Header[] = [];
-  const otherChildren: React.ReactNode[] = [];
-
-  React.Children.forEach(children, (child) => {
-    if (!React.isValidElement(child)) {
-      otherChildren.push(child);
-      return;
-    }
-
-    // Check if child is ElegantGrid.Headers container
-    if (child.type === ElegantGridHeaders) {
-      // Extract individual header configurations
-      React.Children.forEach(child.props.children, (headerChild) => {
-        if (
-          React.isValidElement(headerChild) && 
-          headerChild.type === ElegantGridHeaderComponent
-        ) {
-          const props = headerChild.props as ElegantGridHeaderProps;
-          headers.push({
-            key: props.dataKey,
-            label: props.label,
-            sortable: props.sortable,
-            resizable: props.resizable,
-            minWidth: props.minWidth,
-            width: props.width,
-            align: props.align,
-            render: props.render,
-          });
-        }
-      });
-    } else {
-      // Keep non-header children (rows)
-      otherChildren.push(child);
-    }
-  });
-
-  return { headers, otherChildren };
-}
-
-function ElegantGridRoot({
-  headers: propHeaders,  // Renamed to distinguish
-  children,
-  // ... other props
-}: ElegantGridProps) {
-  // Extract headers from composition if not provided via props
-  const { headers: compositionHeaders, otherChildren } = useMemo(
-    () => extractHeadersFromChildren(children),
-    [children]
+function FundCell({ fund }: { fund: string }) {
+  const initials = fund.split(' ').map(w => w[0]).join('').slice(0, 2);
+  const isExternal = fund === 'External';
+  
+  return (
+    <div className="flex items-center gap-2">
+      <Avatar className="h-7 w-7">
+        <AvatarFallback className={isExternal ? 'bg-muted text-muted-foreground text-xs' : 'bg-primary/10 text-primary text-xs'}>
+          {initials}
+        </AvatarFallback>
+      </Avatar>
+      <span className="text-sm truncate">{fund}</span>
+    </div>
   );
-
-  // Props take precedence, then composition, then error
-  const headers = propHeaders ?? compositionHeaders;
-  
-  if (!headers || headers.length === 0) {
-    console.warn('ElegantGrid: No headers provided via props or composition');
-    return null;
-  }
-
-  // Use otherChildren (rows) for rendering
-  const rowChildren = propHeaders ? children : otherChildren;
-  
-  // ... rest of component logic unchanged, using `headers` and `rowChildren`
 }
 ```
 
----
-
-#### 4. `src/components/ElegantGrid/ElegantGridHeader.tsx`
-
-Support custom render function:
-
+2. **Update `StatusBadge`** - Remove container styling:
 ```tsx
-// In HeaderCell component, update label rendering:
-<span className="truncate">
-  {header.render ? header.render() : header.label}
-</span>
+function StatusBadge({ status }: { status: string }) {
+  const variant = status === 'completed' ? 'default' : status === 'pending' ? 'secondary' : 'destructive';
+  
+  return (
+    <Badge variant={variant} className="capitalize">
+      {status}
+    </Badge>
+  );
+}
 ```
 
----
-
-#### 5. `src/components/ElegantGrid/index.ts`
-
-Export new components:
-
+3. **Update composition-based headers demo** - Wrap custom content in `ElegantGrid.Cell`:
 ```tsx
-export { ElegantGridHeaders, ElegantGridHeaderComponent } from './ElegantGridHeaders';
-export type { ElegantGridHeaderProps } from './types';
-
-// Update compound component
-export const ElegantGrid = Object.assign(ElegantGridRoot, {
-  Row: ElegantGridRow,
-  Cell: ElegantGridCell,
-  ActionCell: ElegantGridActionCell,
-  Headers: ElegantGridHeaders,           // NEW
-  Header: ElegantGridHeaderComponent,    // NEW
-});
+{basicData.map((tx) => (
+  <ElegantGrid.Row key={tx.id} data={tx}>
+    <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+    <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
+    <ElegantGrid.Cell>{tx.from}</ElegantGrid.Cell>
+    <ElegantGrid.Cell>{tx.to}</ElegantGrid.Cell>
+    <ElegantGrid.Cell align="right" className="font-mono">
+      {formatAmount(tx.amount)}
+    </ElegantGrid.Cell>
+    <ElegantGrid.Cell>
+      <StatusBadge status={tx.status} />
+    </ElegantGrid.Cell>
+  </ElegantGrid.Row>
+))}
 ```
 
----
-
-### How Width Synchronization Works
-
-The Clone & Extract pattern **completely solves** the width synchronization problem:
-
-1. **Extraction Phase**: Before any rendering, `extractHeadersFromChildren()` scans the component tree
-2. **Conversion**: Each `<ElegantGrid.Header>` is converted to a standard `Header` object
-3. **Single Source of Truth**: The extracted `Header[]` array flows into `GridProvider` exactly as before
-4. **Context Distribution**: `columnWidths` state is derived from headers and shared via context
-5. **Synchronized Rendering**: Both header row and data rows consume the same `columnWidths` from context
-
-The composition components (`Headers`, `Header`) **never render** - they're pure configuration holders that get parsed before the render tree is built.
-
----
-
-### Backward Compatibility
-
-| Usage Pattern | Support |
-|---------------|---------|
-| `headers` prop only (current) | Full support, unchanged |
-| Composition only (new) | Full support |
-| Both provided | `headers` prop takes precedence |
-
----
-
-### Demo Update
-
-Add a new demo section showing the composition API:
-
+4. **Update Full Featured demo** - Same pattern:
 ```tsx
-<DemoSection
-  id="composition-headers"
-  title="Composition-Based Headers"
-  description="Define headers using JSX composition with ElegantGrid.Headers and ElegantGrid.Header"
->
-  <ElegantGrid
-    totalCount={3}
-    onSort={setSortOrder}
-  >
-    <ElegantGrid.Headers>
-      <ElegantGrid.Header dataKey="date" label="Date" sortable minWidth={120} />
-      <ElegantGrid.Header dataKey="type" label="Type" minWidth={100} />
-      <ElegantGrid.Header 
-        dataKey="status" 
-        label="Status" 
-        render={() => (
-          <span className="flex items-center gap-1">
-            <CircleIcon className="h-3 w-3" /> Status
-          </span>
-        )}
-      />
-    </ElegantGrid.Headers>
-    
-    {sampleTransactions.slice(0, 3).map((t) => (
-      <ElegantGrid.Row key={t.id} data={t}>
-        <ElegantGrid.Cell>{formatDate(t.date)}</ElegantGrid.Cell>
-        <ElegantGrid.Cell>{t.type}</ElegantGrid.Cell>
-        <StatusBadge status={t.status} />
-      </ElegantGrid.Row>
-    ))}
-  </ElegantGrid>
-</DemoSection>
+<ElegantGrid.Row key={tx.id} data={tx}>
+  <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+  <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
+  <ElegantGrid.Cell>
+    <FundCell fund={tx.from} />
+  </ElegantGrid.Cell>
+  <ElegantGrid.Cell>
+    <FundCell fund={tx.to} />
+  </ElegantGrid.Cell>
+  <ElegantGrid.Cell align="right" className="font-mono">
+    {formatAmount(tx.amount)}
+  </ElegantGrid.Cell>
+  <ElegantGrid.Cell>
+    <StatusBadge status={tx.status} />
+  </ElegantGrid.Cell>
+  <ElegantGrid.ActionCell
+    onEdit={() => handleEdit(tx)}
+    onDelete={() => handleDelete(tx)}
+  />
+</ElegantGrid.Row>
 ```
 
 ---
 
 ### Summary of Changes
 
-| File | Action | Description |
-|------|--------|-------------|
-| `ElegantGridHeaders.tsx` | Create | Container and Header marker components |
-| `types.ts` | Modify | Add `render` to Header, add ElegantGridHeaderProps, make `headers` optional |
-| `ElegantGrid.tsx` | Modify | Add extractHeadersFromChildren logic |
-| `ElegantGridHeader.tsx` | Modify | Support custom render function |
-| `index.ts` | Modify | Export new components and update compound pattern |
-| `Index.tsx` | Modify | Add composition-based demo section |
+| File | Change |
+|------|--------|
+| `src/pages/Index.tsx` | Remove container styling from `FundCell` and `StatusBadge`; wrap custom components in `ElegantGrid.Cell` in all demo sections |
 
+This approach:
+- Fixes the extra divider issue
+- Follows the established pattern for custom cell content
+- Ensures consistent border and padding logic across all cells
+- Is backward compatible with existing demos using custom cells
