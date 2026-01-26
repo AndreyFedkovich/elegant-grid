@@ -1,78 +1,147 @@
 
 
-## Add Missing CSS Rules for Resize Handle
+## Update README with New Features
 
-### Background
+### Overview
+Add documentation for the composition-based headers API, which allows defining grid columns using JSX components instead of the traditional `headers` prop array.
 
-The resize handle in `ElegantGridHeader.tsx` uses several Tailwind utility classes that are not yet reflected in `styles.css`. Since the library is designed to work without Tailwind in consumer projects, these classes need explicit CSS definitions.
+---
 
-### Missing Classes
+### Changes to README.md
 
-From the resize handle code:
+#### 1. Update Features List (Line 10-24)
+
+Add a new feature bullet:
+
+```markdown
+- 🧩 **Composition-Based Headers** - Define columns with JSX using `ElegantGrid.Headers` and `ElegantGrid.Header`
+```
+
+#### 2. Add New Section: "Composition-Based Headers" (After "Complete Example", before "API Reference")
+
+Insert a new section around line 245:
+
+```markdown
+## Composition-Based Headers
+
+Instead of passing a `headers` prop array, you can define columns using JSX composition:
+
+### Basic Usage
+
 ```tsx
-<div className="group absolute top-0 right-0 h-full w-3 translate-x-1/2 cursor-col-resize select-none z-10 flex items-center justify-center">
-  <GripVertical className="h-4 w-4 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-</div>
+<ElegantGrid totalCount={data.length}>
+  <ElegantGrid.Headers>
+    <ElegantGrid.Header dataKey="name" label="Name" sortable minWidth={150} />
+    <ElegantGrid.Header dataKey="email" label="Email" minWidth={200} />
+    <ElegantGrid.Header dataKey="status" label="Status" align="center" />
+  </ElegantGrid.Headers>
+
+  {data.map((item) => (
+    <ElegantGrid.Row key={item.id} data={item}>
+      <ElegantGrid.Cell>{item.name}</ElegantGrid.Cell>
+      <ElegantGrid.Cell>{item.email}</ElegantGrid.Cell>
+      <ElegantGrid.Cell align="center">{item.status}</ElegantGrid.Cell>
+    </ElegantGrid.Row>
+  ))}
+</ElegantGrid>
 ```
 
-| Class | Status | Notes |
-|-------|--------|-------|
-| `group` | Missing | Marker class for group-hover pattern |
-| `h-full` | Missing | Height: 100% |
-| `w-3` | Missing | Width: 0.75rem |
-| `group-hover:opacity-100` | Missing | Show on parent hover |
-| `absolute` | ✓ Exists | Line 161 |
-| `top-0`, `right-0` | ✓ Exists | Lines 165-166 |
-| `translate-x-1/2` | ✓ Exists | Line 309 |
-| `cursor-col-resize` | ✓ Exists | Line 291 |
-| `select-none` | ✓ Exists | Line 287 |
-| `z-10` | ✓ Exists | Line 172 |
-| `flex`, `items-center`, `justify-center` | ✓ Exists | Lines 84, 97, 100 |
-| `h-4`, `w-4` | ✓ Exists | Lines 144, 135 |
-| `text-muted-foreground/50` | Missing | 50% opacity variant |
-| `opacity-0`, `transition-opacity` | ✓ Exists | Lines 296, 321 |
+### Custom Header Content
+
+Use `children` for custom JSX in header cells:
+
+```tsx
+<ElegantGrid.Header dataKey="status" label="Status" minWidth={100}>
+  <span className="flex items-center gap-1.5">
+    <Circle className="h-2.5 w-2.5 fill-current" />
+    Status
+  </span>
+</ElegantGrid.Header>
+```
+
+### Fill Column
+
+Use `fill` to make a column expand and occupy remaining space:
+
+```tsx
+<ElegantGrid.Header dataKey="description" label="Description" fill />
+```
+
+### ElegantGrid.Header Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `dataKey` | `string` | *required* | Column identifier (maps to Header.key) |
+| `label` | `string` | *required* | Display text |
+| `sortable` | `boolean` | `false` | Enable column sorting |
+| `resizable` | `boolean` | `true` | Enable column resizing |
+| `minWidth` | `number` | `100` | Minimum column width in pixels |
+| `width` | `number` | `150` | Initial column width in pixels |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `fill` | `boolean` | `false` | Expand to fill remaining space |
+| `children` | `ReactNode` | - | Custom header content (takes precedence over label) |
+
+> **Note:** If both `headers` prop and `<ElegantGrid.Headers>` are provided, the prop takes precedence.
+```
+
+#### 3. Update Header Interface Table (Line 248-258)
+
+Add `fill` property to the Header interface documentation:
+
+```markdown
+| `fill` | `boolean` | `false` | Expand column to fill remaining space |
+```
+
+Also add `customContent`:
+
+```markdown
+| `customContent` | `ReactNode` | - | Custom content for the header cell |
+```
+
+#### 4. Update TypeScript Exports Section (Line 511-534)
+
+Add the new exports:
+
+```tsx
+import {
+  ElegantGrid,
+  // Components for composition API
+  ElegantGridHeaders,
+  ElegantGridHeaderComponent,
+  // Types
+  type Header,
+  type SortOrder,
+  type PagerOptions,
+  type PagerLabels,
+  type EmptyStateConfig,
+  type GridConfig,
+  type ResolvedGridConfig,
+  type ElegantGridProps,
+  type ElegantGridRowProps,
+  type ElegantGridCellProps,
+  type ElegantGridActionCellProps,
+  type ElegantGridHeaderProps,  // NEW
+  type GridContextValue,
+  DEFAULT_GRID_CONFIG,
+} from '@andreyfedkovich/elegant-grid';
+```
 
 ---
 
-### File to Modify
+### Summary of Additions
 
-**`src/components/ElegantGrid/styles.css`**
-
-Add the following rules:
-
-**1. Width `w-3`** (near line 138, with other widths):
-```css
-.elegant-grid-root .w-3 { width: 0.75rem; }
-```
-
-**2. Height `h-full`** (near line 150, with other heights):
-```css
-.elegant-grid-root .h-full { height: 100%; }
-```
-
-**3. Text color variant `text-muted-foreground/50`** (near line 247):
-```css
-.elegant-grid-root .text-muted-foreground\/50 { color: hsl(var(--muted-foreground) / 0.5); }
-```
-
-**4. Group hover pattern** (near line 425, with other hover states):
-```css
-/* Group hover pattern for resize handle */
-.elegant-grid-root .group:hover .group-hover\:opacity-100 { opacity: 1; }
-```
-
-Note: The `group` class itself doesn't need a CSS rule - it's just a marker class used by the `group-hover:` selector.
+| Section | Change |
+|---------|--------|
+| Features list | Add composition-based headers bullet point |
+| New section | "Composition-Based Headers" with usage examples |
+| Header Interface | Add `fill` and `customContent` properties |
+| TypeScript Exports | Add `ElegantGridHeaderProps` type, `ElegantGridHeaders`, `ElegantGridHeaderComponent` |
 
 ---
 
-### Summary
+### Technical Notes
 
-| Addition | Purpose |
-|----------|---------|
-| `.w-3` | Resize handle width (12px hit area) |
-| `.h-full` | Resize handle fills header height |
-| `.text-muted-foreground\/50` | Grip icon color at 50% opacity |
-| `.group:hover .group-hover\:opacity-100` | Show grip icon when hovering resize area |
-
-These additions ensure the resize handle displays correctly in consumer projects without Tailwind.
+- The composition API uses a "Clone & Extract" pattern where `ElegantGrid.Headers` children are parsed at render time to build a `Header[]` array
+- The `fill` property uses `minmax(width, 1fr)` in the CSS Grid template for flexible expansion
+- Both approaches (prop-based and composition-based) are fully interchangeable and feature-equivalent
 
