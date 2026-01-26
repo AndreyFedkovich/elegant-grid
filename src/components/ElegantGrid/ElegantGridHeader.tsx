@@ -75,7 +75,7 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
 }
 
 interface HeaderCellProps {
-  header: { key: string; label: string; sortable?: boolean; resizable?: boolean; align?: string; render?: () => React.ReactNode };
+  header: { key: string; label: string; sortable?: boolean; resizable?: boolean; align?: string; customContent?: React.ReactNode };
   index: number;
   onSort: () => void;
   isSorted: boolean;
@@ -136,7 +136,7 @@ function HeaderCell({
       )}
       onClick={header.sortable ? onSort : undefined}
     >
-      <span className="truncate">{header.render ? header.render() : header.label}</span>
+      <span className="truncate">{header.customContent ?? header.label}</span>
       {header.sortable && isSorted && (
         <span className="flex-shrink-0">
           {sortDirection === 'asc' ? (
