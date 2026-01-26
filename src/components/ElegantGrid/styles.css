@@ -132,6 +132,7 @@
 
 /* ===== Width ===== */
 .elegant-grid-root .w-1 { width: 0.25rem; }
+.elegant-grid-root .w-3 { width: 0.75rem; }
 .elegant-grid-root .w-4 { width: 1rem; }
 .elegant-grid-root .w-8 { width: 2rem; }
 .elegant-grid-root .w-10 { width: 2.5rem; }
@@ -148,6 +149,7 @@
 .elegant-grid-root .h-11 { height: 2.75rem; }
 .elegant-grid-root .h-16 { height: 4rem; }
 .elegant-grid-root .h-px { height: 1px; }
+.elegant-grid-root .h-full { height: 100%; }
 
 /* ===== Min/Max Width ===== */
 .elegant-grid-root .min-w-0 { min-width: 0; }
@@ -244,6 +246,7 @@
 /* ===== Text Color ===== */
 .elegant-grid-root .text-foreground { color: hsl(var(--foreground)); }
 .elegant-grid-root .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+.elegant-grid-root .text-muted-foreground\/50 { color: hsl(var(--muted-foreground) / 0.5); }
 .elegant-grid-root .text-muted-foreground\/50 { color: hsl(var(--muted-foreground) / 0.5); }
 .elegant-grid-root .text-primary { color: hsl(var(--primary)); }
 .elegant-grid-root .text-primary-foreground { color: hsl(var(--primary-foreground)); }
@@ -409,6 +412,9 @@
 /* ===== Pseudo-class Variants ===== */
 .elegant-grid-root .last\:border-r-0:last-child { border-right-width: 0; }
 .elegant-grid-root .last\:border-b-0:last-child { border-bottom-width: 0; }
+
+/* Group hover pattern for resize handle */
+.elegant-grid-root .group:hover .group-hover\:opacity-100 { opacity: 1; }
 
 /* Hover states */
 .elegant-grid-root .hover\:text-foreground:hover { color: hsl(var(--foreground)); }
