@@ -8,8 +8,8 @@ export interface Header {
   width?: number;
   align?: 'left' | 'center' | 'right';
   resizable?: boolean;
-  /** Custom render function for header content */
-  render?: () => React.ReactNode;
+  /** Custom content for the header (takes precedence over label) */
+  customContent?: React.ReactNode;
 }
 
 // Re-export from composition component for type usage

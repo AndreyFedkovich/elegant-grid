@@ -46,7 +46,7 @@ function extractHeadersFromChildren(children: React.ReactNode): {
             minWidth: props.minWidth,
             width: props.width,
             align: props.align,
-            render: props.render,
+            customContent: props.children,
           });
         }
       });

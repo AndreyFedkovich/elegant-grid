@@ -15,8 +15,8 @@ export interface ElegantGridHeaderProps {
   width?: number;
   /** Text alignment */
   align?: 'left' | 'center' | 'right';
-  /** Custom render function for header content */
-  render?: () => React.ReactNode;
+  /** Custom content for the header (takes precedence over label) */
+  children?: React.ReactNode;
 }
 
 /**

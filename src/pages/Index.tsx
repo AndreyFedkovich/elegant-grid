@@ -303,13 +303,12 @@ export default function Index() {
                 dataKey="status" 
                 label="Status" 
                 minWidth={100}
-                render={() => (
-                  <span className="flex items-center gap-1.5">
-                    <Circle className="h-2.5 w-2.5 fill-current" />
-                    Status
-                  </span>
-                )}
-              />
+              >
+                <span className="flex items-center gap-1.5">
+                  <Circle className="h-2.5 w-2.5 fill-current" />
+                  Status
+                </span>
+              </ElegantGrid.Header>
             </ElegantGrid.Headers>
             
             {basicData.map((tx) => (
