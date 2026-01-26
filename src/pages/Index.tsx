@@ -291,7 +291,7 @@ export default function Index() {
         <DemoSection
           id="composition-headers"
           title="Composition-Based Headers"
-          description="Define headers using JSX composition with ElegantGrid.Headers and ElegantGrid.Header. Supports custom render functions for header content."
+          description="Define headers using JSX composition with ElegantGrid.Headers and ElegantGrid.Header."
         >
           <ElegantGrid
             totalCount={basicData.length}
