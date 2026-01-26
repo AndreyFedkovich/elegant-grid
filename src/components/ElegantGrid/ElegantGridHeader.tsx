@@ -151,13 +151,10 @@ function HeaderCell({
       )}
       {header.resizable !== false && (
         <div
-          className={cn(
-            'absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors',
-            isResizing && 'bg-primary'
-          )}
+          className="group absolute top-0 right-0 h-full w-3 translate-x-1/2 cursor-col-resize select-none z-10 flex items-center justify-center"
           onMouseDown={handleResizeStart}
         >
-          <GripVertical className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-muted-foreground/50 opacity-0 hover:opacity-100" />
+          <GripVertical className="h-4 w-4 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
       )}
     </div>
