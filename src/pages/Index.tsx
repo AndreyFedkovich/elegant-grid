@@ -65,13 +65,13 @@ function DemoSection({
   );
 }
 
-// Custom cell components
+// Custom cell components - content only, no container styling
 function FundCell({ fund }: { fund: string }) {
   const initials = fund.split(' ').map(w => w[0]).join('').slice(0, 2);
   const isExternal = fund === 'External';
   
   return (
-    <div className="flex items-center gap-2 p-3 border-r border-border">
+    <div className="flex items-center gap-2">
       <Avatar className="h-7 w-7">
         <AvatarFallback className={isExternal ? 'bg-muted text-muted-foreground text-xs' : 'bg-primary/10 text-primary text-xs'}>
           {initials}
@@ -86,11 +86,9 @@ function StatusBadge({ status }: { status: string }) {
   const variant = status === 'completed' ? 'default' : status === 'pending' ? 'secondary' : 'destructive';
   
   return (
-    <div className="flex items-center p-3 border-r border-border">
-      <Badge variant={variant} className="capitalize">
-        {status}
-      </Badge>
-    </div>
+    <Badge variant={variant} className="capitalize">
+      {status}
+    </Badge>
   );
 }
 
@@ -268,12 +266,18 @@ export default function Index() {
               <ElegantGrid.Row key={tx.id} data={tx}>
                 <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
                 <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
-                <FundCell fund={tx.from} />
-                <FundCell fund={tx.to} />
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.from} />
+                </ElegantGrid.Cell>
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.to} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.Cell align="right" className="font-mono">
                   {formatAmount(tx.amount)}
                 </ElegantGrid.Cell>
-                <StatusBadge status={tx.status} />
+                <ElegantGrid.Cell>
+                  <StatusBadge status={tx.status} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.ActionCell
                   onEdit={() => handleEdit(tx)}
                   onDelete={() => handleDelete(tx)}
@@ -321,7 +325,9 @@ export default function Index() {
                 <ElegantGrid.Cell align="right" className="font-mono">
                   {formatAmount(tx.amount)}
                 </ElegantGrid.Cell>
-                <StatusBadge status={tx.status} />
+                <ElegantGrid.Cell>
+                  <StatusBadge status={tx.status} />
+                </ElegantGrid.Cell>
               </ElegantGrid.Row>
             ))}
           </ElegantGrid>
