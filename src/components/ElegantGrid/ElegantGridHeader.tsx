@@ -38,7 +38,10 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
 
   const gridTemplateColumns = [
     showSelection ? `${config.checkboxColumnWidth}px` : '',
-    ...columnWidths.map((w) => `${w}px`),
+    ...headers.map((header, index) => {
+      const width = columnWidths[index];
+      return header.fill ? `minmax(${width}px, 1fr)` : `${width}px`;
+    }),
   ]
     .filter(Boolean)
     .join(' ');
