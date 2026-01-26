@@ -8,7 +8,12 @@ export interface Header {
   width?: number;
   align?: 'left' | 'center' | 'right';
   resizable?: boolean;
+  /** Custom render function for header content */
+  render?: () => React.ReactNode;
 }
+
+// Re-export from composition component for type usage
+export type { ElegantGridHeaderProps } from './ElegantGridHeaders';
 
 export interface SortOrder {
   key: string;
@@ -66,7 +71,8 @@ export interface GridConfig {
 }
 
 export interface ElegantGridProps {
-  headers: Header[];
+  /** Column headers configuration (optional when using composition-based headers) */
+  headers?: Header[];
   totalCount: number;
   loading?: boolean;
   onSort?: (order: SortOrder | null) => void;
