@@ -12,6 +12,9 @@ export { ElegantGridPager } from './ElegantGridPager';
 export { ElegantGridEmpty } from './ElegantGridEmpty';
 export { ElegantGridSkeleton } from './ElegantGridSkeleton';
 
+// Composition-based header components
+export { ElegantGridHeaders, ElegantGridHeaderComponent } from './ElegantGridHeaders';
+
 // Context hook
 export { useGridContext } from './ElegantGridContext';
 
@@ -29,6 +32,7 @@ export type {
   ElegantGridCellProps,
   ElegantGridActionCellProps,
   GridContextValue,
+  ElegantGridHeaderProps,
 } from './types';
 
 // Constants

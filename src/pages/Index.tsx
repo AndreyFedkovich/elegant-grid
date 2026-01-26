@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Package, Github, ExternalLink } from 'lucide-react';
+import { Package, Github, ExternalLink, Circle } from 'lucide-react';
 
 // Sample data
 const sampleTransactions = [
@@ -28,6 +28,7 @@ const sampleTransactions = [
 // Section navigation config
 const sections = [
   { id: 'full-featured', label: 'Full Featured' },
+  { id: 'composition-headers', label: 'Composition Headers' },
   { id: 'basic', label: 'Basic' },
   { id: 'sorting', label: 'Sorting' },
   { id: 'selection', label: 'Selection' },
@@ -277,6 +278,50 @@ export default function Index() {
                   onEdit={() => handleEdit(tx)}
                   onDelete={() => handleDelete(tx)}
                 />
+              </ElegantGrid.Row>
+            ))}
+          </ElegantGrid>
+        </DemoSection>
+
+        {/* Composition-Based Headers */}
+        <DemoSection
+          id="composition-headers"
+          title="Composition-Based Headers"
+          description="Define headers using JSX composition with ElegantGrid.Headers and ElegantGrid.Header. Supports custom render functions for header content."
+        >
+          <ElegantGrid
+            totalCount={basicData.length}
+            onSort={setSortOrder}
+          >
+            <ElegantGrid.Headers>
+              <ElegantGrid.Header dataKey="date" label="Date" sortable minWidth={120} />
+              <ElegantGrid.Header dataKey="type" label="Type" sortable minWidth={100} />
+              <ElegantGrid.Header dataKey="from" label="From" minWidth={150} />
+              <ElegantGrid.Header dataKey="to" label="To" minWidth={150} />
+              <ElegantGrid.Header dataKey="amount" label="Amount" minWidth={120} align="right" />
+              <ElegantGrid.Header 
+                dataKey="status" 
+                label="Status" 
+                minWidth={100}
+                render={() => (
+                  <span className="flex items-center gap-1.5">
+                    <Circle className="h-2.5 w-2.5 fill-current" />
+                    Status
+                  </span>
+                )}
+              />
+            </ElegantGrid.Headers>
+            
+            {basicData.map((tx) => (
+              <ElegantGrid.Row key={tx.id} data={tx}>
+                <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
+                <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
+                <ElegantGrid.Cell>{tx.from}</ElegantGrid.Cell>
+                <ElegantGrid.Cell>{tx.to}</ElegantGrid.Cell>
+                <ElegantGrid.Cell align="right" className="font-mono">
+                  {formatAmount(tx.amount)}
+                </ElegantGrid.Cell>
+                <StatusBadge status={tx.status} />
               </ElegantGrid.Row>
             ))}
           </ElegantGrid>
