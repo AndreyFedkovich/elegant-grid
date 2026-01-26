@@ -1,67 +1,78 @@
 
 
-## Fix: Remove Extra Border at Grid Bottom
+## Add Missing CSS Rules for Resize Handle
 
-### Problem
+### Background
 
-The grid shows a double border at the bottom because:
-1. Every row has `border-b border-border` (bottom border)
-2. The grid container has a border around all sides
+The resize handle in `ElegantGridHeader.tsx` uses several Tailwind utility classes that are not yet reflected in `styles.css`. Since the library is designed to work without Tailwind in consumer projects, these classes need explicit CSS definitions.
 
-When the last row's bottom border meets the container's bottom border, it creates a visually thicker line.
+### Missing Classes
 
----
+From the resize handle code:
+```tsx
+<div className="group absolute top-0 right-0 h-full w-3 translate-x-1/2 cursor-col-resize select-none z-10 flex items-center justify-center">
+  <GripVertical className="h-4 w-4 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+</div>
+```
 
-### Solution
-
-Remove the bottom border from the last row using the `last:border-b-0` utility.
+| Class | Status | Notes |
+|-------|--------|-------|
+| `group` | Missing | Marker class for group-hover pattern |
+| `h-full` | Missing | Height: 100% |
+| `w-3` | Missing | Width: 0.75rem |
+| `group-hover:opacity-100` | Missing | Show on parent hover |
+| `absolute` | ✓ Exists | Line 161 |
+| `top-0`, `right-0` | ✓ Exists | Lines 165-166 |
+| `translate-x-1/2` | ✓ Exists | Line 309 |
+| `cursor-col-resize` | ✓ Exists | Line 291 |
+| `select-none` | ✓ Exists | Line 287 |
+| `z-10` | ✓ Exists | Line 172 |
+| `flex`, `items-center`, `justify-center` | ✓ Exists | Lines 84, 97, 100 |
+| `h-4`, `w-4` | ✓ Exists | Lines 144, 135 |
+| `text-muted-foreground/50` | Missing | 50% opacity variant |
+| `opacity-0`, `transition-opacity` | ✓ Exists | Lines 296, 321 |
 
 ---
 
 ### File to Modify
 
-**`src/components/ElegantGrid/ElegantGridRow.tsx`**
-
-Update line 45 to add `last:border-b-0`:
-
-**Current:**
-```tsx
-className={cn(
-  'grid border-b border-border transition-colors duration-150',
-  isSelected ? 'bg-primary/5' : 'bg-background hover:bg-muted/30',
-  className
-)}
-```
-
-**New:**
-```tsx
-className={cn(
-  'grid border-b border-border last:border-b-0 transition-colors duration-150',
-  isSelected ? 'bg-primary/5' : 'bg-background hover:bg-muted/30',
-  className
-)}
-```
-
----
-
-### Also Add CSS Rule
-
 **`src/components/ElegantGrid/styles.css`**
 
-Add the `last:border-b-0` pseudo-class variant near line 410 (where `last:border-r-0` is defined):
+Add the following rules:
 
+**1. Width `w-3`** (near line 138, with other widths):
 ```css
-.elegant-grid-root .last\:border-b-0:last-child { border-bottom-width: 0; }
+.elegant-grid-root .w-3 { width: 0.75rem; }
 ```
+
+**2. Height `h-full`** (near line 150, with other heights):
+```css
+.elegant-grid-root .h-full { height: 100%; }
+```
+
+**3. Text color variant `text-muted-foreground/50`** (near line 247):
+```css
+.elegant-grid-root .text-muted-foreground\/50 { color: hsl(var(--muted-foreground) / 0.5); }
+```
+
+**4. Group hover pattern** (near line 425, with other hover states):
+```css
+/* Group hover pattern for resize handle */
+.elegant-grid-root .group:hover .group-hover\:opacity-100 { opacity: 1; }
+```
+
+Note: The `group` class itself doesn't need a CSS rule - it's just a marker class used by the `group-hover:` selector.
 
 ---
 
 ### Summary
 
-| File | Change |
-|------|--------|
-| `ElegantGridRow.tsx` | Add `last:border-b-0` to row className |
-| `styles.css` | Add CSS rule for `last:border-b-0` pseudo-class |
+| Addition | Purpose |
+|----------|---------|
+| `.w-3` | Resize handle width (12px hit area) |
+| `.h-full` | Resize handle fills header height |
+| `.text-muted-foreground\/50` | Grip icon color at 50% opacity |
+| `.group:hover .group-hover\:opacity-100` | Show grip icon when hovering resize area |
 
-This ensures the last row doesn't have a bottom border, preventing the double-border appearance at the grid's bottom edge.
+These additions ensure the resize handle displays correctly in consumer projects without Tailwind.
 
