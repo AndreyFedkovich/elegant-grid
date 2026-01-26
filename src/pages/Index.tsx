@@ -118,7 +118,7 @@ export default function Index() {
     { key: 'from', label: 'From', minWidth: 150 },
     { key: 'to', label: 'To', minWidth: 150 },
     { key: 'amount', label: 'Amount', minWidth: 120, align: 'right' },
-    { key: 'status', label: 'Status', minWidth: 100 },
+    { key: 'status', label: 'Status', minWidth: 100, fill: true },
   ];
 
   // Sortable headers
@@ -128,7 +128,7 @@ export default function Index() {
     { key: 'from', label: 'From', minWidth: 150 },
     { key: 'to', label: 'To', minWidth: 150 },
     { key: 'amount', label: 'Amount', sortable: true, minWidth: 120, align: 'right' },
-    { key: 'status', label: 'Status', sortable: true, minWidth: 100 },
+    { key: 'status', label: 'Status', sortable: true, minWidth: 100, fill: true },
   ];
 
   // Full headers with actions
@@ -304,6 +304,7 @@ export default function Index() {
                 label="Status" 
                 minWidth={100}
                 fill
+                resizable={false}
               >
                 <span className="flex items-center gap-1.5">
                   <Circle className="h-2.5 w-2.5 fill-current" />
