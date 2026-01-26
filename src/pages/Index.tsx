@@ -71,7 +71,7 @@ function FundCell({ fund }: { fund: string }) {
   const isExternal = fund === 'External';
   
   return (
-    <div className="flex items-center gap-2 p-3 border-r border-border">
+    <div className="flex items-center gap-2">
       <Avatar className="h-7 w-7">
         <AvatarFallback className={isExternal ? 'bg-muted text-muted-foreground text-xs' : 'bg-primary/10 text-primary text-xs'}>
           {initials}
@@ -86,7 +86,7 @@ function StatusBadge({ status }: { status: string }) {
   const variant = status === 'completed' ? 'default' : status === 'pending' ? 'secondary' : 'destructive';
   
   return (
-    <div className="flex items-center p-3 border-r border-border">
+    <div className="flex items-center">
       <Badge variant={variant} className="capitalize">
         {status}
       </Badge>
@@ -118,7 +118,7 @@ export default function Index() {
     { key: 'from', label: 'From', minWidth: 150 },
     { key: 'to', label: 'To', minWidth: 150 },
     { key: 'amount', label: 'Amount', minWidth: 120, align: 'right' },
-    { key: 'status', label: 'Status', minWidth: 100, fill: true },
+    { key: 'status', label: 'Status', minWidth: 100, fill: true, resizable: false },
   ];
 
   // Sortable headers
@@ -128,7 +128,7 @@ export default function Index() {
     { key: 'from', label: 'From', minWidth: 150 },
     { key: 'to', label: 'To', minWidth: 150 },
     { key: 'amount', label: 'Amount', sortable: true, minWidth: 120, align: 'right' },
-    { key: 'status', label: 'Status', sortable: true, minWidth: 100, fill: true },
+    { key: 'status', label: 'Status', sortable: true, minWidth: 100, fill: true, resizable: false },
   ];
 
   // Full headers with actions
@@ -138,7 +138,7 @@ export default function Index() {
     { key: 'from', label: 'From', sortable: true, minWidth: 150 },
     { key: 'to', label: 'To', sortable: true, minWidth: 150 },
     { key: 'amount', label: 'Amount', sortable: true, minWidth: 120, align: 'right' },
-    { key: 'status', label: 'Status', sortable: true, minWidth: 100 },
+    { key: 'status', label: 'Status', sortable: true, minWidth: 120 },
     { key: 'actions', label: 'Actions', minWidth: 100, align: 'right', resizable: false },
   ];
 
@@ -242,13 +242,11 @@ export default function Index() {
           title="Full Featured Grid"
           description="Complete example with sorting, selection, pagination, custom cells, and action buttons."
         >
-          {fullFeaturedSelection.length > 0 && (
-            <div className="p-3 border-b bg-muted/30">
+          <div className="p-3 bg-muted/30">
               <span className="text-sm text-muted-foreground">
                 {fullFeaturedSelection.length} transaction(s) selected
               </span>
-            </div>
-          )}
+          </div>
           <ElegantGrid
             headers={fullHeaders}
             totalCount={sampleTransactions.length}
@@ -268,12 +266,18 @@ export default function Index() {
               <ElegantGrid.Row key={tx.id} data={tx}>
                 <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
                 <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
-                <FundCell fund={tx.from} />
-                <FundCell fund={tx.to} />
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.from} />
+                </ElegantGrid.Cell>
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.to} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.Cell align="right" className="font-mono">
                   {formatAmount(tx.amount)}
                 </ElegantGrid.Cell>
-                <StatusBadge status={tx.status} />
+                <ElegantGrid.Cell>
+                  <StatusBadge status={tx.status} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.ActionCell
                   onEdit={() => handleEdit(tx)}
                   onDelete={() => handleDelete(tx)}
@@ -322,7 +326,9 @@ export default function Index() {
                 <ElegantGrid.Cell align="right" className="font-mono">
                   {formatAmount(tx.amount)}
                 </ElegantGrid.Cell>
-                <StatusBadge status={tx.status} />
+                <ElegantGrid.Cell>
+                  <StatusBadge status={tx.status} />
+                </ElegantGrid.Cell>
               </ElegantGrid.Row>
             ))}
           </ElegantGrid>
@@ -356,7 +362,7 @@ export default function Index() {
           title="Sorting"
           description="Click column headers to sort ascending or descending. Uses onSort callback."
         >
-          <div className="p-3 border-b bg-muted/30">
+          <div className="p-3 bg-muted/30">
             <span className="text-sm text-muted-foreground">
               Current sort:{' '}
               {sortOrder ? (
@@ -394,7 +400,7 @@ export default function Index() {
           title="Row Selection"
           description="Enable onSelectionChange to allow checkbox selection. Select-all in header."
         >
-          <div className="p-3 border-b bg-muted/30">
+          <div className="p-3 bg-muted/30">
             <span className="text-sm text-muted-foreground">
               Selected:{' '}
               {selectedRows.length > 0 ? (
@@ -469,12 +475,18 @@ export default function Index() {
               <ElegantGrid.Row key={tx.id} data={tx}>
                 <ElegantGrid.Cell>{formatDate(tx.date)}</ElegantGrid.Cell>
                 <ElegantGrid.Cell>{tx.type}</ElegantGrid.Cell>
-                <FundCell fund={tx.from} />
-                <FundCell fund={tx.to} />
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.from} />
+                </ElegantGrid.Cell>
+                <ElegantGrid.Cell>
+                  <FundCell fund={tx.to} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.Cell align="right" className="font-mono">
                   {formatAmount(tx.amount)}
                 </ElegantGrid.Cell>
-                <StatusBadge status={tx.status} />
+                <ElegantGrid.Cell>
+                  <StatusBadge status={tx.status} />
+                </ElegantGrid.Cell>
                 <ElegantGrid.ActionCell
                   onEdit={() => handleEdit(tx)}
                   onDelete={() => handleDelete(tx)}
@@ -514,7 +526,7 @@ export default function Index() {
           title="Loading State"
           description="Toggle loading to see skeleton rows. Uses config.skeletonRows for consistent height."
         >
-          <div className="p-3 border-b bg-muted/30 flex items-center gap-3">
+          <div className="p-3 bg-muted/30 flex items-center gap-3">
             <Button 
               variant="outline" 
               size="sm"
