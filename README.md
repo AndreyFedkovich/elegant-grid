@@ -10,6 +10,7 @@ A premium React data grid with compound components, built on Tailwind CSS.
 ## Features
 
 - 🧩 **Compound Component API** - Intuitive `ElegantGrid.Row`, `ElegantGrid.Cell`, `ElegantGrid.ActionCell` pattern
+- 🏗️ **Composition-Based Headers** - Define columns with JSX using `ElegantGrid.Headers` and `ElegantGrid.Header`
 - 📐 **CSS Grid Layout** - Modern div-based layout (not tables)
 - ☑️ **Multi-row Selection** - Checkboxes with select-all support
 - 🔀 **Sortable Columns** - Click headers to sort (asc → desc → none)
@@ -243,6 +244,67 @@ export default function TransactionsPage() {
 }
 ```
 
+## Composition-Based Headers
+
+Instead of passing a `headers` prop array, you can define columns using JSX composition:
+
+### Basic Usage
+
+```tsx
+<ElegantGrid totalCount={data.length}>
+  <ElegantGrid.Headers>
+    <ElegantGrid.Header dataKey="name" label="Name" sortable minWidth={150} />
+    <ElegantGrid.Header dataKey="email" label="Email" minWidth={200} />
+    <ElegantGrid.Header dataKey="status" label="Status" align="center" />
+  </ElegantGrid.Headers>
+
+  {data.map((item) => (
+    <ElegantGrid.Row key={item.id} data={item}>
+      <ElegantGrid.Cell>{item.name}</ElegantGrid.Cell>
+      <ElegantGrid.Cell>{item.email}</ElegantGrid.Cell>
+      <ElegantGrid.Cell align="center">{item.status}</ElegantGrid.Cell>
+    </ElegantGrid.Row>
+  ))}
+</ElegantGrid>
+```
+
+### Custom Header Content
+
+Use `children` for custom JSX in header cells:
+
+```tsx
+<ElegantGrid.Header dataKey="status" label="Status" minWidth={100}>
+  <span className="flex items-center gap-1.5">
+    <Circle className="h-2.5 w-2.5 fill-current" />
+    Status
+  </span>
+</ElegantGrid.Header>
+```
+
+### Fill Column
+
+Use `fill` to make a column expand and occupy remaining space:
+
+```tsx
+<ElegantGrid.Header dataKey="description" label="Description" fill />
+```
+
+### ElegantGrid.Header Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `dataKey` | `string` | *required* | Column identifier (maps to Header.key) |
+| `label` | `string` | *required* | Display text |
+| `sortable` | `boolean` | `false` | Enable column sorting |
+| `resizable` | `boolean` | `true` | Enable column resizing |
+| `minWidth` | `number` | `100` | Minimum column width in pixels |
+| `width` | `number` | `150` | Initial column width in pixels |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `fill` | `boolean` | `false` | Expand to fill remaining space |
+| `children` | `ReactNode` | - | Custom header content (takes precedence over label) |
+
+> **Note:** If both `headers` prop and `<ElegantGrid.Headers>` are provided, the prop takes precedence.
+
 ## API Reference
 
 ### Header Interface
@@ -256,6 +318,8 @@ export default function TransactionsPage() {
 | `width` | `number` | `150` | Initial column width in pixels |
 | `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
 | `resizable` | `boolean` | `true` | Enable column resizing |
+| `fill` | `boolean` | `false` | Expand column to fill remaining space |
+| `customContent` | `ReactNode` | - | Custom content for the header cell |
 
 ### ElegantGridProps
 
@@ -514,6 +578,10 @@ import { Button } from '@/components/ui/button';
 // Components & Types
 import {
   ElegantGrid,
+  // Components for composition API
+  ElegantGridHeaders,
+  ElegantGridHeaderComponent,
+  // Types
   type Header,
   type SortOrder,
   type PagerOptions,
@@ -525,6 +593,7 @@ import {
   type ElegantGridRowProps,
   type ElegantGridCellProps,
   type ElegantGridActionCellProps,
+  type ElegantGridHeaderProps,
   type GridContextValue,
   DEFAULT_GRID_CONFIG,
 } from '@andreyfedkovich/elegant-grid';
