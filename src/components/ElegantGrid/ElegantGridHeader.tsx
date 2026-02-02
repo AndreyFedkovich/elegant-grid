@@ -153,6 +153,7 @@ function HeaderCell({
         <div
           className="group absolute top-0 right-0 h-full w-3 translate-x-1/2 cursor-col-resize select-none z-10 flex items-center justify-center"
           onMouseDown={handleResizeStart}
+          onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="h-4 w-4 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
