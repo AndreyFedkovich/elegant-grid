@@ -1,48 +1,124 @@
 
 
-## Fix: Column Resizing Triggering Sort
+## Fix: Skeleton Column Widths Not Synced After Resize
 
 ### Problem
 
-When resizing a column, the sort handler is also being triggered. This happens because:
+When a column is resized, the skeleton loading view shows misaligned separators because it uses the **initial** column widths instead of the **current** resized widths from context.
 
-1. The resize handle uses `onMouseDown` to start resizing
-2. The parent header cell uses `onClick` for sorting
-3. `stopPropagation()` on `mousedown` does **not** prevent the subsequent `click` event from firing
+**Root Cause:**
+
+In `ElegantGrid.tsx` (line 188-193):
+```tsx
+<ElegantGridSkeleton
+  columns={headers.length}
+  rows={skeletonRowCount}
+  showSelection={showSelection}
+  columnWidths={initialColumnWidths}  // ← Uses initial widths, not current
+/>
+```
+
+The `initialColumnWidths` is calculated once from the headers and never updates when columns are resized. Meanwhile, the actual resized widths are stored in the `GridContext`.
 
 ### Solution
 
-Track whether a resize operation occurred and skip the sort if it did. We'll use a ref to track the resize state and add an `onClick` handler to the resize element that stops propagation.
+Modify `ElegantGridSkeleton` to use `columnWidths` directly from the `GridContext` instead of receiving them as a prop. Since the skeleton is always rendered inside the `GridProvider`, it has access to the context.
 
-### File to Modify
+---
 
-**`src/components/ElegantGrid/ElegantGridHeader.tsx`**
+### File Changes
 
-#### Change 1: Add click handler to resize element (Line 152-159)
+#### 1. `src/components/ElegantGrid/ElegantGridSkeleton.tsx`
 
-Add `onClick` with `stopPropagation()` to prevent the click from bubbling to the parent:
-
+**Before:**
 ```tsx
-{header.resizable !== false && (
-  <div
-    className="group absolute top-0 right-0 h-full w-3 translate-x-1/2 cursor-col-resize select-none z-10 flex items-center justify-center"
-    onMouseDown={handleResizeStart}
-    onClick={(e) => e.stopPropagation()}
-  >
-    <GripVertical className="h-4 w-4 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-  </div>
-)}
+interface ElegantGridSkeletonProps {
+  columns: number;
+  rows?: number;
+  showSelection?: boolean;
+  columnWidths: number[];
+}
+
+export function ElegantGridSkeleton({
+  columns,
+  rows = 5,
+  showSelection = true,
+  columnWidths,
+}: ElegantGridSkeletonProps) {
+  // Try to get config from context, fallback to defaults if not available
+  let checkboxColumnWidth = 48;
+  let cellPadding = 'p-3';
+  
+  try {
+    const context = useGridContext();
+    checkboxColumnWidth = context.config.checkboxColumnWidth;
+    cellPadding = context.config.cellPadding;
+  } catch {
+    // Outside of context, use defaults
+  }
 ```
+
+**After:**
+```tsx
+interface ElegantGridSkeletonProps {
+  columns: number;
+  rows?: number;
+  showSelection?: boolean;
+}
+
+export function ElegantGridSkeleton({
+  columns,
+  rows = 5,
+  showSelection = true,
+}: ElegantGridSkeletonProps) {
+  // Get widths and config from context (skeleton is always rendered inside GridProvider)
+  const { columnWidths, config } = useGridContext();
+  const { checkboxColumnWidth, cellPadding } = config;
+```
+
+- Remove `columnWidths` from props interface
+- Get `columnWidths` directly from context alongside `config`
+- Simplify by removing the try/catch (skeleton is always inside GridProvider)
+
+---
+
+#### 2. `src/components/ElegantGrid/ElegantGrid.tsx`
+
+**Before (line 188-193):**
+```tsx
+<ElegantGridSkeleton
+  columns={headers.length}
+  rows={skeletonRowCount}
+  showSelection={showSelection}
+  columnWidths={initialColumnWidths}
+/>
+```
+
+**After:**
+```tsx
+<ElegantGridSkeleton
+  columns={headers.length}
+  rows={skeletonRowCount}
+  showSelection={showSelection}
+/>
+```
+
+- Remove the `columnWidths` prop since skeleton now gets it from context
+
+---
 
 ### Why This Works
 
-| Event Sequence | Before Fix | After Fix |
-|----------------|------------|-----------|
-| `mousedown` on resize handle | Starts resize, stops propagation | Same |
-| `mouseup` anywhere | Ends resize | Same |
-| `click` on resize handle | Bubbles to parent → triggers sort | **Stopped** - doesn't reach parent |
+| Before | After |
+|--------|-------|
+| Skeleton receives `initialColumnWidths` (static, computed once) | Skeleton reads `columnWidths` from context (dynamic, updates on resize) |
+| Resize changes context but skeleton doesn't see it | Skeleton re-renders with current widths when context updates |
+| Header and skeleton widths diverge after resize | Header and skeleton always use same width source |
 
-### Alternative Considered
+### Visual Result
 
-We could also track `isResizing` state and check it in the `onSort` handler, but adding `onClick` with `stopPropagation()` to the resize handle is simpler and more direct - it prevents the event from ever reaching the parent.
+After this fix, when a column is resized and then loading is triggered:
+- The header columns will have the resized widths
+- The skeleton rows will use the same widths from context
+- The separators will align perfectly
 
