@@ -189,7 +189,6 @@ function ElegantGridRoot({
                   columns={headers.length}
                   rows={skeletonRowCount}
                   showSelection={showSelection}
-                  columnWidths={initialColumnWidths}
                 />
               )}
 

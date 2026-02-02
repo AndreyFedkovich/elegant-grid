@@ -7,26 +7,16 @@ interface ElegantGridSkeletonProps {
   columns: number;
   rows?: number;
   showSelection?: boolean;
-  columnWidths: number[];
 }
 
 export function ElegantGridSkeleton({
   columns,
   rows = 5,
   showSelection = true,
-  columnWidths,
 }: ElegantGridSkeletonProps) {
-  // Try to get config from context, fallback to defaults if not available
-  let checkboxColumnWidth = 48;
-  let cellPadding = 'p-3';
-  
-  try {
-    const context = useGridContext();
-    checkboxColumnWidth = context.config.checkboxColumnWidth;
-    cellPadding = context.config.cellPadding;
-  } catch {
-    // Outside of context, use defaults
-  }
+  // Get widths and config from context (skeleton is always rendered inside GridProvider)
+  const { columnWidths, config } = useGridContext();
+  const { checkboxColumnWidth, cellPadding } = config;
 
   const gridTemplateColumns = [
     showSelection ? `${checkboxColumnWidth}px` : '',
