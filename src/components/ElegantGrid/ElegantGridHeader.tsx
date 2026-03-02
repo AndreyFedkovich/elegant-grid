@@ -20,6 +20,7 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
     isAllSelected,
     selectedRows,
     config,
+    gridTemplateColumns,
   } = useGridContext();
 
   const handleSort = (key: string, sortable?: boolean) => {
@@ -35,16 +36,6 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
       setSortOrder({ key, direction: 'asc' });
     }
   };
-
-  const gridTemplateColumns = [
-    showSelection ? `${config.checkboxColumnWidth}px` : '',
-    ...headers.map((header, index) => {
-      const width = columnWidths[index];
-      return header.fill ? `minmax(${width}px, 1fr)` : `${width}px`;
-    }),
-  ]
-    .filter(Boolean)
-    .join(' ');
 
   return (
     <div

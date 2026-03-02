@@ -72,13 +72,13 @@ export interface GridConfig {
   skeletonRows?: number;
 }
 
-export interface ElegantGridProps {
+export interface ElegantGridProps<T = any> {
   /** Column headers configuration (optional when using composition-based headers) */
   headers?: Header[];
   totalCount: number;
   loading?: boolean;
   onSort?: (order: SortOrder | null) => void;
-  onSelectionChange?: (selectedData: any[]) => void;
+  onSelectionChange?: (selectedData: T[]) => void;
   pagerOptions?: PagerOptions;
   emptyState?: EmptyStateConfig;
   children: React.ReactNode;
@@ -87,9 +87,9 @@ export interface ElegantGridProps {
   config?: GridConfig;
 }
 
-export interface ElegantGridRowProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ElegantGridRowProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  data?: any;
+  data?: T;
   selectable?: boolean;
 }
 
@@ -126,19 +126,23 @@ export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'heigh
 /** Config type used in context (with optional height fields) */
 export type ResolvedGridConfig = Required<Omit<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'>> & Pick<GridConfig, 'maxHeight' | 'height' | 'minHeight' | 'skeletonRows'>;
 
-export interface GridContextValue {
+export interface GridContextValue<T = any> {
   headers: Header[];
   columnWidths: number[];
   setColumnWidth: (index: number, width: number) => void;
   sortOrder: SortOrder | null;
   setSortOrder: (order: SortOrder | null) => void;
   selectedRows: Set<string>;
-  toggleRowSelection: (id: string, data: any) => void;
-  toggleAllSelection: (allData: any[]) => void;
+  toggleRowSelection: (id: string, data: T) => void;
+  toggleAllSelection: (allData: T[]) => void;
   isAllSelected: boolean;
   loading: boolean;
-  rowDataMap: Map<string, any>;
+  rowDataMap: Map<string, T>;
   config: ResolvedGridConfig;
   /** Whether selection is enabled at the grid level */
   showSelection: boolean;
+  /** Shared grid template columns string */
+  gridTemplateColumns: string;
+  /** Helper to get row ID */
+  getRowId: (data: T) => string;
 }

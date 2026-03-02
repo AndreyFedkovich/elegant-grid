@@ -20,7 +20,7 @@ interface GridProviderProps {
   children: React.ReactNode;
 }
 
-export function GridProvider({
+export function GridProvider<T = any>({
   headers,
   loading,
   onSort,
@@ -38,7 +38,7 @@ export function GridProvider({
   );
   const [sortOrder, setSortOrderState] = useState<SortOrder | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [rowDataMap, setRowDataMap] = useState<Map<string, any>>(new Map());
+  const [rowDataMap, setRowDataMap] = useState<Map<string, T>>(new Map());
   const [allRowIds, setAllRowIds] = useState<string[]>([]);
 
   const setColumnWidth = useCallback((index: number, width: number) => {
@@ -54,7 +54,11 @@ export function GridProvider({
     onSort?.(order);
   }, [onSort]);
 
-  const toggleRowSelection = useCallback((id: string, data: any) => {
+  const getRowId = useCallback((d: T) => {
+    return d?.[config.rowIdKey as keyof T]?.toString() || JSON.stringify(d);
+  }, [config.rowIdKey]);
+
+  const toggleRowSelection = useCallback((id: string, data: T) => {
     setSelectedRows((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -66,35 +70,38 @@ export function GridProvider({
       // Update row data map
       setRowDataMap((prevMap) => {
         const nextMap = new Map(prevMap);
-        nextMap.set(id, data);
+        if (next.has(id)) {
+          nextMap.set(id, data);
+        } else {
+          nextMap.delete(id);
+        }
         return nextMap;
       });
 
-      // Notify parent
-      const selectedData = Array.from(next).map((rowId) => rowDataMap.get(rowId) || data);
-      onSelectionChange?.(selectedData);
-      
       return next;
     });
-  }, [onSelectionChange, rowDataMap]);
+  }, []);
 
-  const getRowId = useCallback((d: any) => {
-    return d?.[config.rowIdKey]?.toString() || JSON.stringify(d);
-  }, [config.rowIdKey]);
+  // Effect to notify parent of selection changes to avoid side-effects in state updater
+  React.useEffect(() => {
+    if (onSelectionChange) {
+      const selectedData = Array.from(selectedRows).map((id) => rowDataMap.get(id)).filter(Boolean) as T[];
+      onSelectionChange(selectedData);
+    }
+  }, [selectedRows, rowDataMap, onSelectionChange]);
 
-  const toggleAllSelection = useCallback((allData: any[]) => {
+  const toggleAllSelection = useCallback((allData: T[]) => {
     const allIds = allData.map(getRowId);
     
     setSelectedRows((prev) => {
-      const allSelected = allIds.every((id) => prev.has(id));
+      const allSelected = allIds.length > 0 && allIds.every((id) => prev.has(id));
       
       if (allSelected) {
-        onSelectionChange?.([]);
         return new Set();
       } else {
         // Update row data map with all data
-        setRowDataMap(() => {
-          const nextMap = new Map();
+        setRowDataMap((prevMap) => {
+          const nextMap = new Map(prevMap);
           allData.forEach((d) => {
             const id = getRowId(d);
             nextMap.set(id, d);
@@ -102,13 +109,12 @@ export function GridProvider({
           return nextMap;
         });
         
-        onSelectionChange?.(allData);
         return new Set(allIds);
       }
     });
     
     setAllRowIds(allIds);
-  }, [onSelectionChange, getRowId]);
+  }, [getRowId]);
 
   const isAllSelected = useMemo(() => {
     if (allRowIds.length === 0) return false;
@@ -118,7 +124,20 @@ export function GridProvider({
   // Determine if selection is enabled at grid level
   const showSelection = onSelectionChange !== undefined;
 
-  const value: GridContextValue = {
+  // Memoized grid template columns for performance and consistency
+  const gridTemplateColumns = useMemo(() => {
+    return [
+      showSelection ? `${config.checkboxColumnWidth}px` : '',
+      ...headers.map((header, index) => {
+        const width = columnWidths[index];
+        return header.fill ? `minmax(${width}px, 1fr)` : `${width}px`;
+      }),
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }, [showSelection, config.checkboxColumnWidth, headers, columnWidths]);
+
+  const value: GridContextValue<T> = {
     headers,
     columnWidths,
     setColumnWidth,
@@ -132,7 +151,9 @@ export function GridProvider({
     rowDataMap,
     config,
     showSelection,
+    gridTemplateColumns,
+    getRowId,
   };
 
-  return <GridContext.Provider value={value}>{children}</GridContext.Provider>;
+  return <GridContext.Provider value={value as GridContextValue}>{children}</GridContext.Provider>;
 }

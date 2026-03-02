@@ -11,22 +11,11 @@ export function ElegantGridRow({
   className,
   ...props
 }: ElegantGridRowProps) {
-  const { headers, columnWidths, selectedRows, toggleRowSelection, config, showSelection } = useGridContext();
+  const { selectedRows, toggleRowSelection, config, showSelection, gridTemplateColumns, getRowId } = useGridContext();
   const [isHovered, setIsHovered] = useState(false);
 
-  const rowId = data?.[config.rowIdKey]?.toString() || JSON.stringify(data);
+  const rowId = getRowId(data);
   const isSelected = selectedRows.has(rowId);
-
-  // Use grid-level showSelection for column layout (ensures alignment with header)
-  const gridTemplateColumns = [
-    showSelection ? `${config.checkboxColumnWidth}px` : '',
-    ...headers.map((header, index) => {
-      const width = columnWidths[index];
-      return header.fill ? `minmax(${width}px, 1fr)` : `${width}px`;
-    }),
-  ]
-    .filter(Boolean)
-    .join(' ');
 
   // Clone children to pass hover state
   const childrenWithProps = React.Children.map(children, (child) => {

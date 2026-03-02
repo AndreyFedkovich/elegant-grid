@@ -60,7 +60,7 @@ function extractHeadersFromChildren(children: React.ReactNode): {
   return { headers, otherChildren };
 }
 
-function ElegantGridRoot({
+function ElegantGridRoot<T = any>({
   headers: propHeaders,
   totalCount,
   loading = false,
@@ -71,7 +71,7 @@ function ElegantGridRoot({
   children,
   className,
   config: userConfig,
-}: ElegantGridProps) {
+}: ElegantGridProps<T>) {
   // Extract headers from composition if not provided via props
   const { headers: compositionHeaders, otherChildren } = useMemo(
     () => extractHeadersFromChildren(children),
@@ -83,11 +83,7 @@ function ElegantGridRoot({
 
   // Determine which children to render (original if using props, filtered if using composition)
   const rowChildren = propHeaders ? children : otherChildren;
-  const config = useMemo(
-    () => ({ ...DEFAULT_GRID_CONFIG, ...userConfig }),
-    [userConfig]
-  );
-
+  
   // Refs for scroll synchronization
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null); // Outer: horizontal scroll
@@ -102,7 +98,7 @@ function ElegantGridRoot({
 
   // Extract all row data for select-all functionality (use rowChildren for composition mode)
   const allRowData = useMemo(() => {
-    const data: any[] = [];
+    const data: T[] = [];
     React.Children.forEach(rowChildren, (child) => {
       if (React.isValidElement(child) && child.props.data) {
         data.push(child.props.data);
@@ -115,11 +111,9 @@ function ElegantGridRoot({
   const showEmptyState = !loading && !hasRows && emptyState;
   const showSelection = onSelectionChange !== undefined;
 
-  // Get initial column widths
-  const initialColumnWidths = headers.map((h) => h.width || h.minWidth || config.defaultColumnWidth);
-
   // Compute body scroll styles
   const bodyScrollStyle: React.CSSProperties = {};
+  const config = { ...DEFAULT_GRID_CONFIG, ...userConfig };
   const hasHeightConstraint = Boolean(config.height || config.maxHeight || config.minHeight);
   
   if (config.minHeight) {
@@ -140,7 +134,7 @@ function ElegantGridRoot({
   const scrollbarClass = config.styledScrollbar ? 'elegant-scrollbar' : '';
 
   return (
-    <GridProvider
+    <GridProvider<T>
       headers={headers}
       loading={loading}
       onSort={onSort}
