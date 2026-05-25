@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
-import { cn } from './utils';
+import { cn, columnDividerClasses } from './utils';
 import { useGridContext } from './ElegantGridContext';
 
 interface ElegantGridHeaderProps {
@@ -43,7 +43,7 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
       style={{ gridTemplateColumns, zIndex: config.stickyHeaderZIndex }}
     >
       {showSelection && (
-        <div className={cn('flex items-center justify-center border-r border-border', config.cellPadding)}>
+        <div className={cn('flex items-center justify-center', columnDividerClasses(config.showVerticalDividers, { omitLastReset: true }), config.cellPadding)}>
           <Checkbox
             checked={isAllSelected && selectedRows.size > 0}
             onCheckedChange={() => toggleAllSelection(allData)}
@@ -62,6 +62,7 @@ export function ElegantGridHeader({ showSelection = true, allData = [] }: Elegan
           onResize={(width) => setColumnWidth(index, width)}
           currentWidth={columnWidths[index]}
           cellPadding={config.cellPadding}
+          showVerticalDividers={config.showVerticalDividers}
         />
       ))}
     </div>
@@ -77,6 +78,7 @@ interface HeaderCellProps {
   onResize: (width: number) => void;
   currentWidth: number;
   cellPadding: string;
+  showVerticalDividers: boolean;
 }
 
 function HeaderCell({
@@ -88,6 +90,7 @@ function HeaderCell({
   onResize,
   currentWidth,
   cellPadding,
+  showVerticalDividers,
 }: HeaderCellProps) {
   const [isResizing, setIsResizing] = useState(false);
   const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
@@ -122,7 +125,7 @@ function HeaderCell({
     <div
       className={cn(
         'relative flex items-center gap-2 text-sm font-medium text-muted-foreground select-none',
-        'border-r border-border last:border-r-0',
+        columnDividerClasses(showVerticalDividers),
         header.sortable && 'cursor-pointer hover:text-foreground hover:bg-muted/80 transition-colors',
         header.align === 'center' && 'justify-center',
         header.align === 'right' && 'justify-end',

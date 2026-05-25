@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
-import { cn } from './utils';
+import { cn, columnDividerClasses } from './utils';
+import { useGridContext } from './ElegantGridContext';
 import { ElegantGridActionCellProps } from './types';
 
 export function ElegantGridActionCell({
@@ -12,11 +13,14 @@ export function ElegantGridActionCell({
   isRowHovered,
   ...props
 }: ElegantGridActionCellProps & { isRowHovered?: boolean }) {
+  const { config } = useGridContext();
+
   return (
     <div
       {...props}
       className={cn(
-        'flex items-center justify-end gap-1 p-2 border-r border-border last:border-r-0 transition-opacity duration-150',
+        'flex items-center justify-end gap-1 p-2 transition-opacity duration-150',
+        columnDividerClasses(config.showVerticalDividers),
         isRowHovered ? 'opacity-100' : 'opacity-0',
         className
       )}

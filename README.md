@@ -362,6 +362,7 @@ Configure grid layout, scrolling behavior, and row identification.
 | `styledScrollbar` | `boolean` | `true` | Enable custom scrollbar styling |
 | `rowIdKey` | `string` | `"id"` | Property key for row identification |
 | `skeletonRows` | `number` | - | Number of skeleton rows during loading (defaults to `defaultPageSize` or 5) |
+| `showVerticalDividers` | `boolean` | `true` | Show/hide vertical column dividers in header and body |
 
 #### GridConfig Example
 
@@ -376,6 +377,7 @@ Configure grid layout, scrolling behavior, and row identification.
     skeletonRows: 10,          // Show 10 skeleton rows during loading
     checkboxColumnWidth: 56,   // Wider checkbox column
     cellPadding: 'p-4',        // Larger cell padding
+    showVerticalDividers: false, // Hide vertical column dividers
   }}
 >
   {/* rows */}

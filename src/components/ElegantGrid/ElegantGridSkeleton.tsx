@@ -1,6 +1,6 @@
 import React from 'react';
 import { Skeleton } from './ui/skeleton';
-import { cn } from './utils';
+import { cn, columnDividerClasses } from './utils';
 import { useGridContext } from './ElegantGridContext';
 
 interface ElegantGridSkeletonProps {
@@ -16,7 +16,7 @@ export function ElegantGridSkeleton({
 }: ElegantGridSkeletonProps) {
   // Get widths and config from context (skeleton is always rendered inside GridProvider)
   const { columnWidths, config } = useGridContext();
-  const { checkboxColumnWidth, cellPadding } = config;
+  const { checkboxColumnWidth, cellPadding, showVerticalDividers } = config;
 
   const gridTemplateColumns = [
     showSelection ? `${checkboxColumnWidth}px` : '',
@@ -34,7 +34,7 @@ export function ElegantGridSkeleton({
           style={{ gridTemplateColumns }}
         >
           {showSelection && (
-            <div className={cn('flex items-center justify-center border-r border-border', cellPadding)}>
+            <div className={cn('flex items-center justify-center', columnDividerClasses(showVerticalDividers, { omitLastReset: true }), cellPadding)}>
               <Skeleton className="h-4 w-4 rounded" />
             </div>
           )}
@@ -42,7 +42,8 @@ export function ElegantGridSkeleton({
             <div
               key={colIndex}
               className={cn(
-                'flex items-center border-r border-border last:border-r-0',
+                'flex items-center',
+                columnDividerClasses(showVerticalDividers),
                 cellPadding
               )}
             >

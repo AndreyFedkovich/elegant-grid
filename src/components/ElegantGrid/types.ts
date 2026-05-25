@@ -70,6 +70,8 @@ export interface GridConfig {
   rowIdKey?: string;
   /** Number of skeleton rows to show during loading (default: uses pagerOptions.defaultPageSize or 5) */
   skeletonRows?: number;
+  /** Show vertical dividers between columns in header and rows (default: true) */
+  showVerticalDividers?: boolean;
 }
 
 export interface ElegantGridProps<T = any> {
@@ -121,6 +123,7 @@ export const DEFAULT_GRID_CONFIG: Required<Omit<GridConfig, 'maxHeight' | 'heigh
   styledScrollbar: true,
   rowIdKey: 'id',
   skeletonRows: undefined,
+  showVerticalDividers: true,
 };
 
 /** Config type used in context (with optional height fields) */

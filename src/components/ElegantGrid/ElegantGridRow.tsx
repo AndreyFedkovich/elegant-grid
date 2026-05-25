@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Checkbox } from './ui/checkbox';
-import { cn } from './utils';
+import { cn, columnDividerClasses } from './utils';
 import { useGridContext } from './ElegantGridContext';
 import { ElegantGridRowProps } from './types';
 
@@ -46,7 +46,7 @@ export function ElegantGridRow({
       }}
     >
       {showSelection && (
-        <div className={cn('flex items-center justify-center border-r border-border', config.cellPadding)}>
+        <div className={cn('flex items-center justify-center', columnDividerClasses(config.showVerticalDividers, { omitLastReset: true }), config.cellPadding)}>
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => toggleRowSelection(rowId, data)}
